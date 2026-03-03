@@ -278,32 +278,6 @@ jobs:
 
           gh release create "${{ needs.plan.outputs.tag }}" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
 
-  build-arm64:
-    needs:
-      - host
-    runs-on: "ubuntu-22.04"
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-          submodules: recursive
-      - name: Install cross
-        run: cargo install cross
-      - name: Build
-        run: cross build --release --locked --features=all-decoders --target aarch64-unknown-linux-gnu
-      - name: Package
-        run: |
-          tar -czf \
-            nu_plugin_audio-${{ github.ref_name }}-aarch64-unknown-linux-gnu.tar.gz \
-            -C target/aarch64-unknown-linux-gnu/release nu_plugin_audio
-      - name: Upload to Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: nu_plugin_audio-${{ github.ref_name }}-aarch64-unknown-linux-gnu.tar.gz
-          tag_name: ${{ github.ref_name }}
-
   announce:
     needs:
       - plan
