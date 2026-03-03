@@ -1,4 +1,4 @@
-use nu_plugin_audio_hook::Sound;
+use nu_plugin_audio::Sound;
 
 fn main() {
     let _ = env_logger::try_init();

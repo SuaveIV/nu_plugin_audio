@@ -1,10 +1,10 @@
 [package]
-name = "nu_plugin_audio_hook"
+name = "nu_plugin_audio"
 version = "0.111.0"
 edition = "2021"
 description = "A nushell plugin to make and play sounds"
-homepage = "https://github.com/FMotalleb/nu_plugin_audio_hook"
-repository = "https://github.com/FMotalleb/nu_plugin_audio_hook"
+homepage = "https://github.com/SuaveIV/nu_plugin_audio"
+repository = "https://github.com/SuaveIV/nu_plugin_audio"
 readme = "README.md"
 license = "MIT"
 keywords = [
