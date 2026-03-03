@@ -1,16 +1,20 @@
-# nu_plugin_audio_hook
+# nu_plugin_audio
 
-A [Nushell](https://www.nushell.sh/) plugin for generating and playing sounds. Supports beeping, tone generation, metadata manipulation, and playback for multiple audio formats.
+A [Nushell](https://www.nushell.sh/) plugin to generate and play sounds. It supports tone generation, metadata manipulation, and playback for multiple audio formats.
+
+## Origins and Attribution
+
+This project is a continuation and expansion of the original `nu_plugin_audio_hook` created by [fmotalleb](https://github.com/fmotalleb/nu_plugin_audio_hook). Due to real-world circumstances, the original author had to archive their repository and step away from development. They gave explicit permission to fork the project and keep the code alive. I am incredibly grateful for their hard work in laying the foundation for this tool.
 
 ---
 
 ## Features
 
-- **`sound beep`** — Play a simple beep sound.
-- **`sound make`** — Generate a noise with a given frequency and duration.
-- **`sound meta`** — Retrieve metadata (duration, artist, album, etc.) from an audio file.
-- **`sound meta set`** — Modify metadata tags in an audio file using format-agnostic key names.
-- **`sound play`** — Play an audio file with a live progress display, interactive controls, and volume adjustment. By default supports FLAC, WAV, MP3, and OGG. Use the `all-decoders` feature to enable AAC and MP4 playback.
+- `sound beep` - Play a simple beep sound.
+- `sound make` - Generate a noise with a given frequency and duration.
+- `sound meta` - Retrieve metadata (duration, artist, album, etc.) from an audio file.
+- `sound meta set` - Modify metadata tags in an audio file using format-agnostic key names.
+- `sound play` - Play an audio file with a live progress display and interactive controls. By default, it supports FLAC, WAV, MP3, and OGG. Use the `all-decoders` feature to enable AAC and MP4 playback.
 
 ---
 
@@ -20,60 +24,70 @@ A [Nushell](https://www.nushell.sh/) plugin for generating and playing sounds. S
 
 ```bash
 sound make 1000 200ms
+
 ```
 
 ### Generate a noise sequence
 
 ```bash
 [ 300.0, 500.0, 1000.0, 400.0, 600.0 ] | each { |it| sound make $it 150ms }
+
 ```
 
 ### Generate a noise with 50% volume
 
 ```bash
 sound make 1000 200ms -a 0.5
+
 ```
 
 ### Save a generated tone to a file
 
 ```bash
 sound make 1000 200ms --data | save --raw output.wav
+
 ```
 
 ### Play an audio file (first 3 seconds only)
 
 ```bash
 sound play audio.mp3 -d 3sec
+
 ```
 
 ### Play an audio file starting at 2x volume
 
 ```bash
 sound play audio.mp3 -a 2.0
+
 ```
 
 ### Play an audio file starting at 50% volume
 
 ```bash
 sound play audio.mp3 -a 0.5
+
 ```
 
-### Play silently — no terminal output (for scripting or background use)
+### Play silently (no terminal output for scripts or background tasks)
 
 ```bash
 sound play audio.mp3 --no-progress
+
 ```
 
 ### Play with Nerd Font icons
 
 ```bash
 sound play audio.mp3 --nerd-fonts
+
 ```
 
 ### Retrieve metadata from an audio file
 
 ```bash
 sound meta audio.mp3
+
 ```
 
 Example output:
@@ -98,6 +112,7 @@ Example output:
 │ sample_rate   │ 44100                      │
 │ channels      │ 2                          │
 ╰───────────────┴────────────────────────────╯
+
 ```
 
 The `artwork` field is a list of records, one per embedded image:
@@ -109,6 +124,7 @@ sound meta audio.mp3 | get artwork
 # ├───┼───────────────┼────────────┼──────────┤
 # │ 0 │ CoverFront    │ image/jpeg │ 127.3 KB │
 # ╰───┴───────────────┴────────────┴──────────╯
+
 ```
 
 FLAC and lossless files additionally expose `bit_depth`:
@@ -121,20 +137,23 @@ sound meta audio.flac | select size format bitrate bit_depth
 # │ bitrate   │ 1411     │
 # │ bit_depth │ 24       │
 # ╰───────────┴──────────╯
+
 ```
 
 ### Modify metadata (change the artist tag)
 
 ```bash
 sound meta set audio.mp3 -k artist -v "new-artist"
+
 ```
 
-Key names are **case-insensitive** — `artist`, `Artist`, and `ARTIST` all work. Key names are format-agnostic — the same key works across MP3, FLAC, OGG, and MP4 files. Use `sound meta --all` to list every available key name.
+Key names are case-insensitive. `artist`, `Artist`, and `ARTIST` all work. Key names are format-agnostic. The same key works across MP3, FLAC, OGG, and MP4 files. Use `sound meta --all` to list every available key name.
 
 ### Set a comment tag
 
 ```bash
 sound meta set audio.mp3 -k comment -v "ripped from vinyl"
+
 ```
 
 ### Set ReplayGain values
@@ -142,12 +161,14 @@ sound meta set audio.mp3 -k comment -v "ripped from vinyl"
 ```bash
 sound meta set audio.mp3 -k replaygain_track_gain -v "-6.2 dB"
 sound meta set audio.mp3 -k replaygain_track_peak -v "0.998"
+
 ```
 
 ### List all available metadata key names
 
 ```bash
 sound meta --all
+
 ```
 
 Key names are normalised to lowercase before lookup, so `Artist`, `ARTIST`, and `artist` are all accepted. The table below shows every supported key grouped by category.
@@ -236,13 +257,14 @@ Key names are normalised to lowercase before lookup, so `Artist`, `ARTIST`, and 
 
 ## Live Playback Display
 
-When playing a file, `sound play` renders a live progress bar to stderr:
+When you play a file, `sound play` renders a live progress bar to stderr:
 
 ```nushell
 ▶  0:42 / 4:05  [██████████░░░░░░░░░░░░░░░░░░░░]  17%  🔊 [████████░░░░░░] 100%
+
 ```
 
-Because the display writes to stderr, stdout remains clean — piping the result of `sound play` to another command works without any garbled output. Use `--no-progress` (`-q`) to suppress the display entirely for scripting or background use.
+Because the display writes to stderr, stdout remains clean. Piping the result of `sound play` to another command works without any garbled output. Use `--no-progress` (`-q`) to suppress the display entirely.
 
 ### Nerd Font mode
 
@@ -250,12 +272,14 @@ If you have a [Nerd Font](https://www.nerdfonts.com) installed and configured in
 
 ```nushell
   0:42 / 4:05  [██████████░░░░░░░░░░░░░░░░░░░░]  17%   [████████░░░░░░] 100%
+
 ```
 
 To enable permanently, add this to your `env.nu`:
 
 ```nushell
 $env.NERD_FONTS = "1"
+
 ```
 
 ---
@@ -278,9 +302,10 @@ The control hint is shown inline on the progress bar and updates live to reflect
 
 ```nushell
 ▶  0:42 / 4:05  [██████████░░░░░░░░░░░░░░░░░░░░]  17%  🔊 [████████░░░░░░] 100%  « [SPACE/pause] »  [↑↓/kj] vol  [m] mute  [q] quit
+
 ```
 
-Use `--no-progress` to disable all terminal output and controls, which is recommended when running in the background or piping output.
+Use `--no-progress` to disable terminal output and controls. This is recommended when you run tasks in the background or pipe output.
 
 ---
 
@@ -293,56 +318,54 @@ Use `--no-progress` to disable all terminal output and controls, which is recomm
 ```bash
 sudo apt update
 sudo apt install -y libasound2-dev pkg-config
+
 ```
 
 #### RHEL / CentOS / Rocky / Alma
 
 ```bash
 sudo dnf install -y alsa-lib-devel pkgconf-pkg-config
+
 ```
 
 #### Arch Linux
 
 ```bash
 sudo pacman -S --needed alsa-lib pkgconf
+
 ```
 
 #### openSUSE
 
 ```bash
 sudo zypper install alsa-lib-devel pkg-config
+
 ```
 
 ### Recommended: using [nupm](https://github.com/nushell/nupm)
 
 ```bash
-git clone https://github.com/FMotalleb/nu_plugin_audio_hook.git
-nupm install --path nu_plugin_audio_hook -f
+git clone [https://github.com/SuaveIV/nu_plugin_audio.git](https://github.com/SuaveIV/nu_plugin_audio.git)
+nupm install --path nu_plugin_audio -f
+
 ```
 
 ### Manual compilation
 
 ```bash
-git clone https://github.com/FMotalleb/nu_plugin_audio_hook.git
-cd nu_plugin_audio_hook
+git clone [https://github.com/SuaveIV/nu_plugin_audio.git](https://github.com/SuaveIV/nu_plugin_audio.git)
+cd nu_plugin_audio
 cargo build -r --locked --features=all-decoders
-plugin add target/release/nu_plugin_audio_hook
+plugin add target/release/nu_plugin_audio
+
 ```
 
 ### Install via Cargo (git)
 
 ```bash
-cargo install --git https://github.com/FMotalleb/nu_plugin_audio_hook.git --locked --features=all-decoders
-plugin add ~/.cargo/bin/nu_plugin_audio_hook
-```
+cargo install --git [https://github.com/SuaveIV/nu_plugin_audio.git](https://github.com/SuaveIV/nu_plugin_audio.git) --locked --features=all-decoders
+plugin add ~/.cargo/bin/nu_plugin_audio
 
-### Install via Cargo (crates.io) — not recommended
-
-> Since I live in Iran and crates.io often restricts package updates, the version there might be outdated.
-
-```bash
-cargo install nu_plugin_audio_hook --locked --features=all-decoders
-plugin add ~/.cargo/bin/nu_plugin_audio_hook
 ```
 
 ---
@@ -389,6 +412,7 @@ cargo build -r --locked --features=symphonia-mp3,symphonia-aac,symphonia-isomp4
 
 # Everything
 cargo build -r --locked --features=all-decoders
+
 ```
 
 ---
