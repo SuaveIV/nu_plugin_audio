@@ -311,61 +311,62 @@ Use `--no-progress` to disable terminal output and controls. This is recommended
 
 ## Installation
 
-### Linux: install ALSA development package
-
-#### Debian / Ubuntu
+### 1. Using [nupm](https://github.com/nushell/nupm) (Recommended)
 
 ```bash
-sudo apt update
-sudo apt install -y libasound2-dev pkg-config
-
+nupm install --force nu_plugin_audio
 ```
 
-#### RHEL / CentOS / Rocky / Alma
+This will automatically download the correct prebuilt binary for your system.
+
+### 2. Prebuilt Binaries (Shell / PowerShell)
+
+**Linux / macOS:**
 
 ```bash
-sudo dnf install -y alsa-lib-devel pkgconf-pkg-config
-
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/SuaveIV/nu_plugin_audio/releases/latest/download/nu_plugin_audio-installer.sh | sh
 ```
 
-#### Arch Linux
+**Windows (PowerShell):**
+
+```powershell
+irm https://github.com/SuaveIV/nu_plugin_audio/releases/latest/download/nu_plugin_audio-installer.ps1 | iex
+```
+
+After installing, register the plugin in Nushell:
+
+```nushell
+plugin add ~/.cargo/bin/nu_plugin_audio
+```
+
+### 3. Cargo Binstall
 
 ```bash
-sudo pacman -S --needed alsa-lib pkgconf
-
+cargo binstall nu_plugin_audio
+plugin add ~/.cargo/bin/nu_plugin_audio
 ```
 
-#### openSUSE
+### 4. Manual Download
 
-```bash
-sudo zypper install alsa-lib-devel pkg-config
+1. Download the archive for your platform from the [Releases page](https://github.com/SuaveIV/nu_plugin_audio/releases).
+2. Extract the binary.
+3. Run `plugin add path/to/nu_plugin_audio`.
 
-```
+### 5. Manual Compilation
 
-### Recommended: using [nupm](https://github.com/nushell/nupm)
+If you need specific feature flags or prebuilt binaries are not available for your platform:
 
-```bash
-git clone [https://github.com/SuaveIV/nu_plugin_audio.git](https://github.com/SuaveIV/nu_plugin_audio.git)
-nupm install --path nu_plugin_audio -f
+**Linux Requirements (ALSA):**
 
-```
-
-### Manual compilation
+- Debian/Ubuntu: `sudo apt install libasound2-dev pkg-config`
+- Fedora/RHEL: `sudo dnf install alsa-lib-devel pkgconf-pkg-config`
+- Arch: `sudo pacman -S alsa-lib pkgconf`
 
 ```bash
 git clone [https://github.com/SuaveIV/nu_plugin_audio.git](https://github.com/SuaveIV/nu_plugin_audio.git)
 cd nu_plugin_audio
 cargo build -r --locked --features=all-decoders
 plugin add target/release/nu_plugin_audio
-
-```
-
-### Install via Cargo (git)
-
-```bash
-cargo install --git [https://github.com/SuaveIV/nu_plugin_audio.git](https://github.com/SuaveIV/nu_plugin_audio.git) --locked --features=all-decoders
-plugin add ~/.cargo/bin/nu_plugin_audio
-
 ```
 
 ---
