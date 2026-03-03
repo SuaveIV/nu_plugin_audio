@@ -4,7 +4,7 @@ A [Nushell](https://www.nushell.sh/) plugin to generate and play sounds. It supp
 
 ## Origins and Attribution
 
-This project is a continuation and expansion of the original `nu_plugin_audio_hook` created by [fmotalleb](https://github.com/fmotalleb/nu_plugin_audio_hook). Due to real-world circumstances, the original author had to archive their repository and step away from development. They gave explicit permission to fork the project and keep the code alive. I am incredibly grateful for their hard work in laying the foundation for this tool.
+This project is a continuation and expansion of the original `nu_plugin_audio_hook` created by [fmotalleb](https://github.com/fmotalleb/nu_plugin_audio_hook). Due to real-world circumstances, the original author plans to archive their repository and step away from development. They gave explicit permission to fork the project and keep the code alive. I am incredibly grateful for their hard work in laying the foundation for this tool.
 
 ---
 
