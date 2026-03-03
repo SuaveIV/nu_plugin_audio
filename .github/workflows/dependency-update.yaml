@@ -116,11 +116,8 @@ jobs:
           open Cargo.toml | get package.version | str trim | let version: string
           $"version=($version)" | save --force $env.GITHUB_OUTPUT
 
-      - name: Create GitHub Release
+      - name: Push Tag
         if: steps.check_commits.outputs.has_commits == '1'
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b  # v2.5.0
-        with:
-          tag_name: v${{ steps.extract_version.outputs.version }}
-          name: Release v${{ steps.extract_version.outputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag v${{ steps.extract_version.outputs.version }}
+          git push origin v${{ steps.extract_version.outputs.version }}
