@@ -1,7 +1,8 @@
 use nu_plugin::{EvaluatedCall, SimplePluginCommand};
 use nu_protocol::{Category, Example, LabeledError, Signature, Span, SyntaxShape, Value};
 use rodio::source::{SineWave, Source};
-use rodio::{OutputStreamBuilder, Sink};
+use rodio::{DeviceSinkBuilder
+, Player};
 
 use std::time::Duration;
 
@@ -128,16 +129,17 @@ fn sine_wave(
     duration_value: Duration,
     amplify_value: f32,
 ) -> Result<(), LabeledError> {
-    let mut stream_handle = OutputStreamBuilder::open_default_stream().map_err(|err| {
+    let mut stream_handle = DeviceSinkBuilder
+::open_default_sink().map_err(|err| {
         LabeledError::new(err.to_string()).with_label("audio stream exception", Span::unknown())
     })?;
 
     stream_handle.log_on_drop(false);
 
-    let sink = Sink::connect_new(stream_handle.mixer());
+    let sink = Player::connect_new(stream_handle.mixer());
     let source = SineWave::new(frequency_value)
         .take_duration(duration_value)
-        .amplify(amplify_value);
+        .amplify(amplify_value as _);
     sink.append(source);
     sink.sleep_until_end();
     Ok(())
@@ -150,12 +152,12 @@ fn generate_wav(
 ) -> Result<Vec<u8>, LabeledError> {
     let source = SineWave::new(frequency)
         .take_duration(duration)
-        .amplify(amplify);
-    let sample_rate = source.sample_rate();
-    let num_channels = source.channels();
+        .amplify(amplify as _);
+    let sample_rate = source.sample_rate().get();
+    let num_channels = source.channels().get();
 
     let samples: Vec<i16> = source
-        .map(|s| (s.clamp(-1.0, 1.0) * i16::MAX as f32) as i16)
+        .map(|s| ((s as f32).clamp(-1.0, 1.0) * i16::MAX as f32).round() as i16)
         .collect();
 
     let bits_per_sample = 16u16;

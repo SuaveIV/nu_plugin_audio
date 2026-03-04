@@ -16,7 +16,7 @@ This project is a continuation and expansion of the original `nu_plugin_audio_ho
 - `sound make` - Generate a noise with a given frequency and duration.
 - `sound meta` - Retrieve metadata (duration, artist, album, etc.) from an audio file.
 - `sound meta set` - Modify metadata tags in an audio file using format-agnostic key names.
-- `sound play` - Play an audio file with a live progress display and interactive controls. By default, it supports FLAC, WAV, MP3, and OGG. Use the `all-decoders` feature to enable AAC and MP4 playback.
+- `sound play` - Play an audio file with a live progress display and interactive controls. By default, it supports FLAC, WAV, MP3, OGG, AAC, and MP4 playback. Use the `all-decoders` feature for an expanded set like minimp3 or 64-bit support.
 
 ---
 
@@ -366,44 +366,38 @@ plugin add target/release/nu_plugin_audio
 
 ### Default install
 
-Enabled out of the box with no extra flags:
+Enabled out of the box with no extra flags (includes all Symphonia codecs):
 
 | Format | Feature flag | Notes |
 | --- | --- | --- |
-| MP3 | `symphonia-mp3` | Via Symphonia; better accuracy than minimp3 |
-| FLAC | `flac` | Lossless compression |
-| OGG Vorbis | `vorbis` | Open lossy format |
-| WAV | `wav` | Uncompressed PCM |
-
-### With `--features=all-decoders` (recommended)
-
-Everything above plus:
-
-| Format | Feature flag | Notes |
-| --- | --- | --- |
-| AAC | `symphonia-aac` | Used by Apple, YouTube, most streaming services |
-| MP4 / M4A | `symphonia-isomp4` | Container for AAC and ALAC |
-| ALAC | `symphonia-all` | Apple Lossless; only available via bundle |
+| MP3 | `symphonia-all` | Via Symphonia; better accuracy than minimp3 |
+| FLAC | `symphonia-all` | Lossless compression |
+| OGG Vorbis | `symphonia-all` | Open lossy format |
+| WAV | `symphonia-all` | Uncompressed PCM |
+| AAC | `symphonia-all` | Used by Apple, YouTube, most streaming services |
+| MP4 / M4A | `symphonia-all` | Container for AAC and ALAC |
+| ALAC | `symphonia-all` | Apple Lossless |
 | ADPCM | `symphonia-all` | Adaptive PCM; common in games |
 | CAF | `symphonia-all` | Core Audio Format; Apple professional audio |
 | MKV / WebM (Opus) | `symphonia-all` | Open container with Opus codec |
-| MP3 (minimp3) | `minimp3` | Lightweight alternative MP3 decoder |
-| FLAC (Symphonia) | `symphonia-flac` | Alternative FLAC decoder |
-| OGG (Symphonia) | `symphonia-vorbis` | Alternative Vorbis decoder |
-| WAV (Symphonia) | `symphonia-wav` | Alternative WAV decoder |
 
-> **Note:** ALAC, ADPCM, CAF, and MKV/Opus are only available through the
-> `symphonia-all` bundle. rodio 0.21 does not expose them as individual feature
-> flags. All other formats can be opted into selectively.
+### With `--features=all-decoders`
+
+Everything above plus expanded capabilities:
+
+| Format | Feature flag | Notes |
+| --- | --- | --- |
+| MP3 (minimp3) | `minimp3` | Lightweight alternative MP3 decoder |
+| 64-bit precision | `64bit` | f64 sample precision |
+
+> **Note:** The `default` feature includes `rodio/symphonia-all`, providing support for almost every common audio format out of the box.
 
 ### Compile with specific formats only
 
-```bash
-# MP3 + AAC + MP4 only
-cargo build -r --locked --features=symphonia-mp3,symphonia-aac,symphonia-isomp4
+Users who want a smaller binary can build with the `lite` feature, which only includes a minimal set of decoders:
 
-# Everything
-cargo build -r --locked --features=all-decoders
+```bash
+cargo build -r --locked --no-default-features --features=lite
 ```
 
 ---

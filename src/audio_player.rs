@@ -9,7 +9,7 @@ use lofty::file::{AudioFile, TaggedFileExt};
 use lofty::prelude::Accessor;
 use nu_plugin::{EngineInterface, EvaluatedCall, SimplePluginCommand};
 use nu_protocol::{Category, Example, LabeledError, Signature, SyntaxShape, Value};
-use rodio::{source::Source, Decoder, OutputStreamBuilder, Sink};
+use rodio::{source::Source, Decoder, DeviceSinkBuilder, Player};
 
 use std::io::{stderr, Write};
 use std::time::{Duration, Instant};
@@ -161,8 +161,8 @@ impl SimplePluginCommand for SoundPlayCmd {
     }
 
     fn description(&self) -> &str {
-        "play an audio file; by default supports FLAC, WAV, MP3 and OGG files \
-        (install with `all-decoders` feature to include AAC and MP4). \
+        "play an audio file; by default supports FLAC, WAV, MP3, OGG, AAC, and MP4 files \
+        (install with `all-decoders` feature to include minimp3, 64-bit precision, and more). \
         Displays live playback stats by default; use --no-progress (-q) to suppress \
         output for scripting or background use. Interactive controls (space, arrows) \
         are available for files longer than 1 minute, including volume up/down and 5s seeking. \
@@ -192,7 +192,7 @@ impl SimplePluginCommand for SoundPlayCmd {
 fn play_audio(engine: &EngineInterface, call: &EvaluatedCall) -> Result<(), LabeledError> {
     let (file_span, file, path) = load_file(engine, call)?;
 
-    let mut output_stream = OutputStreamBuilder::open_default_stream().map_err(|err| {
+    let mut output_stream = DeviceSinkBuilder::open_default_sink().map_err(|err| {
         LabeledError::new(err.to_string()).with_label("audio stream exception", call.head)
     })?;
 
@@ -211,7 +211,7 @@ fn play_audio(engine: &EngineInterface, call: &EvaluatedCall) -> Result<(), Labe
         .map(|tag| (tag.title().map(|s| s.to_string()), tag.artist().map(|s| s.to_string())))
         .unwrap_or((None, None));
 
-    // Volume is now set on the Sink rather than baked into the source with
+    // Volume is now set on the Player rather than baked into the source with
     // amplify(), so it can be changed live and survives seeks correctly.
     let initial_volume: f32 = match call.get_flag_value("amplify") {
         Some(Value::Float { val, .. }) => (val as f32).clamp(0.0, VOLUME_MAX),
@@ -228,9 +228,9 @@ fn play_audio(engine: &EngineInterface, call: &EvaluatedCall) -> Result<(), Labe
             .filter(|d| !d.is_zero())
     });
 
-    let sink = Sink::connect_new(output_stream.mixer());
+    let sink = Player::connect_new(output_stream.mixer());
     sink.append(source);
-    sink.set_volume(initial_volume);
+    sink.set_volume(initial_volume as _);
 
     let sleep_duration: Duration = match load_duration_from(call, "duration") {
         Some(d) => d,
@@ -287,7 +287,7 @@ fn resolve_icon_set(call: &EvaluatedCall) -> IconSet {
 fn wait_silent(
     engine: &EngineInterface,
     call: &EvaluatedCall,
-    sink: &Sink,
+    sink: &Player,
     total: Duration,
 ) -> Result<(), LabeledError> {
     let start = Instant::now();
@@ -308,7 +308,7 @@ fn wait_silent(
 fn wait_with_progress(
     engine: &EngineInterface,
     call: &EvaluatedCall,
-    sink: &Sink,
+    sink: &Player,
     total: Duration,
     initial_volume: f32,
     icons: IconSet,
@@ -392,14 +392,14 @@ fn wait_with_progress(
                             KeyCode::Up | KeyCode::Char('k') => {
                                 volume = (volume + VOLUME_STEP).min(VOLUME_MAX);
                                 if volume > 0.0 { pre_mute_volume = volume; }
-                                sink.set_volume(volume);
+                                sink.set_volume(volume as _);
                                 needs_render = true;
                             }
                             // Down / 'j' — volume down.
                             KeyCode::Down | KeyCode::Char('j') => {
                                 volume = (volume - VOLUME_STEP).max(0.0);
                                 if volume > 0.0 { pre_mute_volume = volume; }
-                                sink.set_volume(volume);
+                                sink.set_volume(volume as _);
                                 needs_render = true;
                             }
                             // 'm' — toggle mute (sets volume to 0 / restores).
@@ -410,7 +410,7 @@ fn wait_with_progress(
                                 } else {
                                     volume = pre_mute_volume.max(VOLUME_STEP);
                                 }
-                                sink.set_volume(volume);
+                                sink.set_volume(volume as _);
                                 needs_render = true;
                             }
                             // 'q' / Escape — stop.
