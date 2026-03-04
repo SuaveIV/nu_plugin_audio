@@ -20,3 +20,5 @@ install-hint = "After installing, open Nushell and run:\n  plugin add <path-to-n
 [dist.dependencies.apt]
 libasound2-dev = "*"
 pkg-config = "*"
+
+allow-dirty = ["ci"]
