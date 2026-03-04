@@ -1,5 +1,7 @@
 # nu_plugin_audio
 
+[![Nushell](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FSuaveIV%2Fnu_plugin_audio%2Fmain%2FCargo.toml&query=%24.dependencies%5B%22nu-plugin%22%5D.version&label=nushell&color=blue&logo=nushell)](https://www.nushell.sh/)
+
 A [Nushell](https://www.nushell.sh/) plugin to generate and play sounds. It supports tone generation, metadata manipulation, and playback for multiple audio formats.
 
 ## Origins and Attribution

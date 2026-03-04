@@ -50,9 +50,6 @@ jobs:
 
           mut content = (open Cargo.toml --raw)
 
-          # Update package version
-          $content = ($content | str replace --regex '(?m)^(version\s*=\s*)".*?"' $"${1}\"($sanitized_plugin_version)\"")
-
           let toml_data = (open Cargo.toml)
 
           ($toml_data.dependencies? | default {} | columns)
@@ -69,10 +66,6 @@ jobs:
           })
 
           $content | save --force Cargo.toml
-
-          open nupm.nuon --raw
-            | str replace --regex '(\s*version:\s*)".*?"' $"${1}\"($sanitized_plugin_version)\""
-            | save --force nupm.nuon
 
           rm --force Cargo.lock
           cargo update
