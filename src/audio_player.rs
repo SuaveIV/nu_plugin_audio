@@ -161,8 +161,8 @@ impl SimplePluginCommand for SoundPlayCmd {
     }
 
     fn description(&self) -> &str {
-        "play an audio file; by default supports FLAC, WAV, MP3 and OGG files \
-        (install with `all-decoders` feature to include AAC and MP4). \
+        "play an audio file; by default supports FLAC, WAV, MP3, OGG, AAC, and MP4 files \
+        (install with `all-decoders` feature to include minimp3, 64-bit precision, and more). \
         Displays live playback stats by default; use --no-progress (-q) to suppress \
         output for scripting or background use. Interactive controls (space, arrows) \
         are available for files longer than 1 minute, including volume up/down and 5s seeking. \
