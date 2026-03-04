@@ -15,6 +15,7 @@ on:
 
 jobs:
   build-arm64:
+    if: false
     runs-on: ubuntu-22.04
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
