@@ -244,8 +244,8 @@ fn parse_stream_meta(source: &impl Source, lofty_duration: Option<Duration>, spa
         record.push("duration", Value::nothing(span));
         // TODO: fallback estimation by filesize
     }
-    record.push("sample_rate", Value::int(source.sample_rate() as i64, span));
-    record.push("channels", Value::int(source.channels() as i64, span));
+    record.push("sample_rate", Value::int(source.sample_rate().get() as i64, span));
+    record.push("channels", Value::int(source.channels().get() as i64, span));
     record
 }
 
