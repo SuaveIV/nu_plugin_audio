@@ -104,7 +104,7 @@ impl SimplePluginCommand for SoundBeepCmd {
         _input: &Value,
     ) -> Result<Value, nu_protocol::LabeledError> {
         sine_wave(1000.0, Duration::from_millis(300), 1.0)?;
-        return Ok(Value::nothing(call.head));
+        Ok(Value::nothing(call.head))
     }
 }
 
@@ -150,7 +150,7 @@ fn generate_wav(frequency: f32, duration: Duration, amplify: f32) -> Result<Vec<
     let num_channels = source.channels().get();
 
     let samples: Vec<i16> = source
-        .map(|s| ((s as f32).clamp(-1.0, 1.0) * i16::MAX as f32).round() as i16)
+        .map(|s| (s.clamp(-1.0, 1.0) * i16::MAX as f32).round() as i16)
         .collect();
 
     let bits_per_sample = 16u16;

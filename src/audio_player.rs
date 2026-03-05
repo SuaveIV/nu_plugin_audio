@@ -314,16 +314,17 @@ fn play_audio(engine: &EngineInterface, call: &EvaluatedCall) -> Result<(), Labe
         wait_silent(engine, call, &sink, sleep_duration)
     } else {
         let icon_set = resolve_icon_set(call);
-        wait_with_progress(
+        let ctx = WaitProgressContext {
             engine,
             call,
-            &sink,
-            sleep_duration,
+            sink: &sink,
+            total: sleep_duration,
             initial_volume,
-            icon_set,
+            icons: icon_set,
             title,
             artist,
-        )
+        };
+        wait_with_progress(ctx)
     }
 }
 
@@ -377,45 +378,48 @@ fn wait_silent(
     Ok(())
 }
 
-/// Renders a live progress line (and optional header) to stderr while the sink plays.
-///
-/// For files longer than [`CONTROLS_THRESHOLD`] the terminal is placed in raw mode and
-/// keyboard events (space, arrows, `m`, `q`) are processed. Raw mode is always restored
-/// on exit, even if an error occurs.
-fn wait_with_progress(
-    engine: &EngineInterface,
-    call: &EvaluatedCall,
-    sink: &Player,
+/// Context for the wait_with_progress function, grouping all its parameters.
+struct WaitProgressContext<'a> {
+    engine: &'a EngineInterface,
+    call: &'a EvaluatedCall,
+    sink: &'a Player,
     total: Duration,
     initial_volume: f32,
     icons: IconSet,
     title: Option<String>,
     artist: Option<String>,
-) -> Result<(), LabeledError> {
+}
+
+/// Renders a live progress line (and optional header) to stderr while the sink plays.
+///
+/// For files longer than [`CONTROLS_THRESHOLD`] the terminal is placed in raw mode and
+/// keyboard events (space, arrows, `m`, `q`) are processed. Raw mode is always restored
+/// on exit, even if an error occurs.
+fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
     let mut err = stderr();
-    let interactive = total >= CONTROLS_THRESHOLD;
+    let interactive = ctx.total >= CONTROLS_THRESHOLD;
 
     let mut position = Duration::ZERO;
     let mut last_render = Instant::now()
         .checked_sub(RENDER_INTERVAL)
         .unwrap_or(Instant::now());
     let mut paused = false;
-    let mut volume = initial_volume;
-    let mut pre_mute_volume = initial_volume;
+    let mut volume = ctx.initial_volume;
+    let mut pre_mute_volume = ctx.initial_volume;
     let mut first_render = true;
 
     let _ = execute!(err, Hide);
 
     // Pre-compute the header string once; render_progress will redraw it every frame.
     let header: Option<String> = {
-        let parts: Vec<&str> = [artist.as_deref(), title.as_deref()]
+        let parts: Vec<&str> = [ctx.artist.as_deref(), ctx.title.as_deref()]
             .into_iter()
             .flatten()
             .collect();
 
         if !parts.is_empty() {
             let header_text = parts.join(" — ");
-            let prefix = format!("{}  ", icons.music());
+            let prefix = format!("{}  ", ctx.icons.music());
             Some(format!("{}{}", prefix, header_text))
         } else {
             None
@@ -426,7 +430,7 @@ fn wait_with_progress(
         if let Err(e) = enable_raw_mode() {
             let _ = execute!(err, Show);
             return Err(LabeledError::new(e.to_string())
-                .with_label("failed to enable raw terminal mode", call.head));
+                .with_label("failed to enable raw terminal mode", ctx.call.head));
         }
     }
 
@@ -435,114 +439,114 @@ fn wait_with_progress(
             // Cap at total: some codecs briefly report a position slightly
             // beyond the stream duration, which would incorrectly trip the
             // end-of-track check or clamp the progress bar to 100% too early.
-            position = sink.get_pos().min(total);
+            position = ctx.sink.get_pos().min(ctx.total);
 
-            if position >= total || sink.empty() {
+            if position >= ctx.total || ctx.sink.empty() {
                 break;
             }
 
-            engine.signals().check(&call.head)?;
+            ctx.engine.signals().check(&ctx.call.head)?;
 
             let mut needs_render = false;
 
-            if interactive {
-                if event::poll(Duration::ZERO).unwrap_or(false) {
-                    if let Ok(Event::Key(KeyEvent { code, kind, .. })) = event::read() {
-                        if kind == event::KeyEventKind::Press {
-                            match code {
-                                // Space — toggle play/pause.
-                                KeyCode::Char(' ') => {
-                                    if paused {
-                                        sink.play();
-                                        paused = false;
-                                    } else {
-                                        sink.pause();
-                                        paused = true;
-                                    }
-                                    needs_render = true;
+            if interactive && event::poll(Duration::ZERO).unwrap_or(false) {
+                if let Ok(Event::Key(KeyEvent { code, kind, .. })) = event::read() {
+                    if kind == event::KeyEventKind::Press {
+                        match code {
+                            // Space — toggle play/pause.
+                            KeyCode::Char(' ') => {
+                                if paused {
+                                    ctx.sink.play();
+                                    paused = false;
+                                } else {
+                                    ctx.sink.pause();
+                                    paused = true;
                                 }
-                                // Right / 'l' — seek forward.
-                                KeyCode::Right | KeyCode::Char('l') => {
-                                    let target = (position + SEEK_STEP).min(total);
-                                    let _ = sink.try_seek(target);
-                                    needs_render = true;
-                                }
-                                // Left / 'h' — seek backward.
-                                KeyCode::Left | KeyCode::Char('h') => {
-                                    let target = position.saturating_sub(SEEK_STEP);
-                                    let _ = sink.try_seek(target);
-                                    needs_render = true;
-                                }
-                                // Up / 'k' — volume up.
-                                KeyCode::Up | KeyCode::Char('k') => {
-                                    volume = (volume + VOLUME_STEP).min(VOLUME_MAX);
-                                    if volume > 0.0 {
-                                        pre_mute_volume = volume;
-                                    }
-                                    sink.set_volume(volume as _);
-                                    needs_render = true;
-                                }
-                                // Down / 'j' — volume down.
-                                KeyCode::Down | KeyCode::Char('j') => {
-                                    volume = (volume - VOLUME_STEP).max(0.0);
-                                    if volume > 0.0 {
-                                        pre_mute_volume = volume;
-                                    }
-                                    sink.set_volume(volume as _);
-                                    needs_render = true;
-                                }
-                                // 'm' — toggle mute (sets volume to 0 / restores).
-                                KeyCode::Char('m') => {
-                                    if volume > 0.0 {
-                                        pre_mute_volume = volume;
-                                        volume = 0.0;
-                                    } else {
-                                        volume = pre_mute_volume.max(VOLUME_STEP);
-                                    }
-                                    sink.set_volume(volume as _);
-                                    needs_render = true;
-                                }
-                                // 'q' / Escape — stop.
-                                KeyCode::Char('q') | KeyCode::Esc => {
-                                    sink.stop();
-                                    break;
-                                }
-                                _ => {}
+                                needs_render = true;
                             }
+                            // Right / 'l' — seek forward.
+                            KeyCode::Right | KeyCode::Char('l') => {
+                                let target = (position + SEEK_STEP).min(ctx.total);
+                                let _ = ctx.sink.try_seek(target);
+                                needs_render = true;
+                            }
+                            // Left / 'h' — seek backward.
+                            KeyCode::Left | KeyCode::Char('h') => {
+                                let target = position.saturating_sub(SEEK_STEP);
+                                let _ = ctx.sink.try_seek(target);
+                                needs_render = true;
+                            }
+                            // Up / 'k' — volume up.
+                            KeyCode::Up | KeyCode::Char('k') => {
+                                volume = (volume + VOLUME_STEP).min(VOLUME_MAX);
+                                if volume > 0.0 {
+                                    pre_mute_volume = volume;
+                                }
+                                ctx.sink.set_volume(volume as _);
+                                needs_render = true;
+                            }
+                            // Down / 'j' — volume down.
+                            KeyCode::Down | KeyCode::Char('j') => {
+                                volume = (volume - VOLUME_STEP).max(0.0);
+                                if volume > 0.0 {
+                                    pre_mute_volume = volume;
+                                }
+                                ctx.sink.set_volume(volume as _);
+                                needs_render = true;
+                            }
+                            // 'm' — toggle mute (sets volume to 0 / restores).
+                            KeyCode::Char('m') => {
+                                if volume > 0.0 {
+                                    pre_mute_volume = volume;
+                                    volume = 0.0;
+                                } else {
+                                    volume = pre_mute_volume.max(VOLUME_STEP);
+                                }
+                                ctx.sink.set_volume(volume as _);
+                                needs_render = true;
+                            }
+                            // 'q' / Escape — stop.
+                            KeyCode::Char('q') | KeyCode::Esc => {
+                                ctx.sink.stop();
+                                break;
+                            }
+                            _ => {}
                         }
                     }
                 }
             }
 
             if needs_render || last_render.elapsed() >= RENDER_INTERVAL {
-                render_progress(
-                    &mut err,
-                    position,
-                    total,
+                let render_ctx = RenderProgressContext {
+                    err: &mut err,
+                    elapsed: position,
+                    total: ctx.total,
                     paused,
                     volume,
                     interactive,
-                    &icons,
-                    header.as_deref(),
+                    icons: &ctx.icons,
+                    header: header.as_deref(),
                     first_render,
-                );
+                };
+                render_progress(render_ctx);
                 first_render = false;
                 last_render = Instant::now();
             }
             std::thread::sleep(KEY_POLL_INTERVAL);
         }
 
-        render_progress(
-            &mut err,
-            position.min(total),
-            total,
-            false,
+        let final_render_ctx = RenderProgressContext {
+            err: &mut err,
+            elapsed: position.min(ctx.total),
+            total: ctx.total,
+            paused: false,
             volume,
             interactive,
-            &icons,
-            header.as_deref(),
+            icons: &ctx.icons,
+            header: header.as_deref(),
             first_render,
-        );
+        };
+        render_progress(final_render_ctx);
         Ok::<(), LabeledError>(())
     })();
 
@@ -573,51 +577,58 @@ fn wait_with_progress(
 /// avoid garbled wrapping output.
 const MIN_RENDER_WIDTH: u16 = 40;
 
-/// Renders one progress line in-place on stderr.
-///
-/// Nerd Font:  ♪   0:42 / 4:05  [████████░░░░░░░░░░░░░░░░░░░░░░]  17%   100%  « [SPACE] »  [q]
-/// Unicode:    ♪ ▶  0:42 / 4:05  [████████░░░░░░░░░░░░░░░░░░░░░░]  17%  🔊 100%  « [SPACE] »  [q]
-/// ASCII:      > 0:42 / 4:05  [########......................]  17%  [V] 100%  << [SPACE] >>  [q]
-fn render_progress(
-    err: &mut std::io::Stderr,
+/// Context for the render_progress function, grouping all its parameters.
+struct RenderProgressContext<'a> {
+    err: &'a mut std::io::Stderr,
     elapsed: Duration,
     total: Duration,
     paused: bool,
     volume: f32,
     interactive: bool,
-    icons: &IconSet,
-    header: Option<&str>,
+    icons: &'a IconSet,
+    header: Option<&'a str>,
     first_render: bool,
-) {
+}
+
+/// Renders one progress line in-place on stderr.
+///
+/// Nerd Font:  ♪   0:42 / 4:05  [████████░░░░░░░░░░░░░░░░░░░░░░]  17%   100%  « [SPACE] »  [q]
+/// Unicode:    ♪ ▶  0:42 / 4:05  [████████░░░░░░░░░░░░░░░░░░░░░░]  17%  🔊 100%  « [SPACE] »  [q]
+/// ASCII:      > 0:42 / 4:05  [########......................]  17%  [V] 100%  << [SPACE] >>  [q]
+fn render_progress(ctx: RenderProgressContext) {
     // Bail out silently on very narrow terminals rather than wrapping garbage.
     if size().map(|(w, _)| w).unwrap_or(u16::MAX) < MIN_RENDER_WIDTH {
         return;
     }
 
-    let elapsed_str = format_duration(elapsed);
-    let total_str = format_duration(total);
-    let ratio = if total.is_zero() {
+    let elapsed_str = format_duration(ctx.elapsed);
+    let total_str = format_duration(ctx.total);
+    let ratio = if ctx.total.is_zero() {
         0.0
     } else {
-        (elapsed.as_secs_f64() / total.as_secs_f64()).clamp(0.0, 1.0)
+        (ctx.elapsed.as_secs_f64() / ctx.total.as_secs_f64()).clamp(0.0, 1.0)
     };
     let percent = (ratio * 100.0).round() as u8;
-    let vol_pct = (volume.min(VOLUME_MAX) * 100.0).round() as u8;
-    let vol_icon = icons.volume(volume);
+    let vol_pct = (ctx.volume.min(VOLUME_MAX) * 100.0).round() as u8;
+    let vol_icon = ctx.icons.volume(ctx.volume);
 
-    let prefix = if *icons == IconSet::NerdFont {
-        format!("{} ", icons.music())
+    let prefix = if *ctx.icons == IconSet::NerdFont {
+        format!("{} ", ctx.icons.music())
     } else {
         String::new()
     };
-    let icon = if paused { icons.pause() } else { icons.play() };
+    let icon = if ctx.paused {
+        ctx.icons.pause()
+    } else {
+        ctx.icons.play()
+    };
 
-    let controls_suffix = if interactive {
-        let toggle_label = if paused { "play " } else { "pause" };
+    let controls_suffix = if ctx.interactive {
+        let toggle_label = if ctx.paused { "play " } else { "pause" };
         format!(
             "  {} [SPACE/{toggle_label}] {}  [↑↓/kj] vol  [m] mute  [q] quit",
-            icons.rewind(),
-            icons.fast_forward(),
+            ctx.icons.rewind(),
+            ctx.icons.fast_forward(),
         )
     } else {
         String::new()
@@ -670,9 +681,9 @@ fn render_progress(
         }
     }
 
-    let bar = render_bar(ratio, bar_width, icons);
-    let vol_ratio = (volume as f64 / VOLUME_MAX as f64).clamp(0.0, 1.0);
-    let vol_bar = render_bar(vol_ratio, vol_bar_width, icons);
+    let bar = render_bar(ratio, bar_width, ctx.icons);
+    let vol_ratio = (ctx.volume as f64 / VOLUME_MAX as f64).clamp(0.0, 1.0);
+    let vol_bar = render_bar(vol_ratio, vol_bar_width, ctx.icons);
 
     // Build the entire output (header + progress line) into a single buffer so
     // it is written to the terminal in one write_all + flush — eliminating the
@@ -680,8 +691,8 @@ fn render_progress(
     // Windows.
     let mut buf: Vec<u8> = Vec::new();
 
-    if let Some(hdr) = header {
-        if first_render {
+    if let Some(hdr) = ctx.header {
+        if ctx.first_render {
             // Reserve a blank line that will become the header line.  The
             // cursor ends up one line below it, which is exactly where the
             // progress line lives from this point on.
@@ -693,7 +704,7 @@ fn render_progress(
 
         let term_width = size().map(|(w, _)| w).unwrap_or(80) as usize;
         if hdr.width() > term_width {
-            let ellipsis = if *icons == IconSet::Ascii {
+            let ellipsis = if *ctx.icons == IconSet::Ascii {
                 "..."
             } else {
                 "…"
@@ -730,8 +741,8 @@ fn render_progress(
     );
     let _ = queue!(buf, Clear(ClearType::UntilNewLine));
 
-    let _ = err.write_all(&buf);
-    let _ = err.flush();
+    let _ = ctx.err.write_all(&buf);
+    let _ = ctx.err.flush();
 }
 
 /// Renders a single progress bar of the given `width` as a `String`.
@@ -761,16 +772,14 @@ fn render_bar(ratio: f64, width: usize, icons: &IconSet) -> String {
 
     let mut current_len = n_full;
 
-    if current_len < width {
-        if *icons == IconSet::NerdFont {
-            let remainder = f_width - n_full as f64;
-            let part_idx = (remainder * 8.0).floor() as usize;
-            if part_idx > 0 {
-                let partials = ['▏', '▎', '▍', '▌', '▋', '▊', '▉'];
-                if part_idx <= partials.len() {
-                    s.push(partials[part_idx - 1]);
-                    current_len += 1;
-                }
+    if current_len < width && *icons == IconSet::NerdFont {
+        let remainder = f_width - n_full as f64;
+        let part_idx = (remainder * 8.0).floor() as usize;
+        if part_idx > 0 {
+            let partials = ['▏', '▎', '▍', '▌', '▋', '▊', '▉'];
+            if part_idx <= partials.len() {
+                s.push(partials[part_idx - 1]);
+                current_len += 1;
             }
         }
     }
