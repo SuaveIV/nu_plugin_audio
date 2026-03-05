@@ -94,8 +94,12 @@ def download_and_install [
                 open $archive_path | hash sha256
             }
 
-            if $actual != $expected {
-                log warning $"checksum mismatch: expected ($expected), got ($actual)"
+            # sha256sum files are "<hash>  <filename>" — extract just the hash
+            let actual_hash = ($actual | str trim)
+            let expected_hash = ($expected | str trim | split row " " | first)
+
+            if $actual_hash != $expected_hash {
+                log warning $"checksum mismatch: expected ($expected_hash), got ($actual_hash)"
                 rm -rf $tmp_dir
                 return false
             }
@@ -148,10 +152,16 @@ def download_and_install [
     return true
 }
 
-def check_and_download_prebuilt [url: string, filename: string, install_root: path, name: string] {
+def check_and_download_prebuilt [
+    url: string
+    filename: string
+    install_root: path
+    name: string
+    checksum_url?: string
+] {
     try {
         http head $url
-        return (download_and_install $url $filename $install_root $name)
+        return (download_and_install $url $filename $install_root $name $checksum_url)
     } catch {
         log warning "prebuilt binary not found on GitHub releases, falling back to source build"
         return false
@@ -173,10 +183,11 @@ def install_prebuilt [
     let ext = if $nu.os-info.name == "windows" { "zip" } else { "tar.gz" }
     let filename = $"($name)-v($version)-($target).($ext)"
     let url = $"https://github.com/SuaveIV/($name)/releases/download/v($version)/($filename)"
+    let checksum_url = $"($url).sha256"
 
     log info $"checking for prebuilt binary at ($url)"
 
-    if (check_and_download_prebuilt $url $filename $install_root $name) {
+    if (check_and_download_prebuilt $url $filename $install_root $name $checksum_url) {
         return true
     }
 
@@ -185,9 +196,10 @@ def install_prebuilt [
         let ext_xz = "tar.xz"
         let filename_xz = $"($name)-v($version)-($target).($ext_xz)"
         let url_xz = $"https://github.com/SuaveIV/($name)/releases/download/v($version)/($filename_xz)"
+        let checksum_url_xz = $"($url_xz).sha256"
         log info $"checking for prebuilt binary at ($url_xz)"
 
-        if (check_and_download_prebuilt $url_xz $filename_xz $install_root $name) {
+        if (check_and_download_prebuilt $url_xz $filename_xz $install_root $name $checksum_url_xz) {
             return true
         }
     }
