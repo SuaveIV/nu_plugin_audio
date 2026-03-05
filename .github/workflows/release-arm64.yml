@@ -36,17 +36,19 @@ jobs:
             -C target/aarch64-unknown-linux-gnu/release nu_plugin_audio
       - name: Wait for main release
         run: |
-          echo "Waiting for main release to be created for tag ${{ env.TAG }}"
+          echo "Waiting for main release to be published for tag ${{ env.TAG }}"
           for i in {1..360}; do
-            if gh api repos/${{ github.repository }}/releases/tags/${{ env.TAG }} > /dev/null 2>&1; then
-              echo "Main release found, proceeding with upload"
+            DRAFT=$(gh api repos/${{ github.repository }}/releases/tags/${{ env.TAG }} \
+              --jq '.draft' 2>/dev/null || echo "notfound")
+            if [ "$DRAFT" = "false" ]; then
+              echo "Release is published, proceeding"
               break
             fi
             if [ $i -eq 360 ]; then
-              echo "Timeout waiting for main release after 360 attempts"
+              echo "Timeout waiting for release"
               exit 1
             fi
-            echo "Attempt $i/360: Main release not found, waiting 5 seconds..."
+            echo "Attempt $i/360: waiting..."
             sleep 5
           done
       - name: Upload to Release
