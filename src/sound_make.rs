@@ -150,7 +150,7 @@ fn generate_wav(frequency: f32, duration: Duration, amplify: f32) -> Result<Vec<
     let num_channels = source.channels().get();
 
     let samples: Vec<i16> = source
-        .map(|s| (s.clamp(-1.0, 1.0) * i16::MAX as f32).round() as i16)
+        .map(|s| ((s as f64).clamp(-1.0, 1.0) * i16::MAX as f64).round() as i16)
         .collect();
 
     let bits_per_sample = 16u16;
