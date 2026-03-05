@@ -601,6 +601,16 @@ fn render_progress(ctx: RenderProgressContext) {
         return;
     }
 
+    // If a header is present and the terminal is too narrow to fit it on a single line,
+    // skip rendering to prevent the MoveUp(1) from causing header duplication.
+    if let Some(header) = ctx.header {
+        if let Ok((term_width, _)) = size() {
+            if term_width < header.width() as u16 {
+                return;
+            }
+        }
+    }
+
     let elapsed_str = format_duration(ctx.elapsed);
     let total_str = format_duration(ctx.total);
     let ratio = if ctx.total.is_zero() {
