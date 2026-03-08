@@ -74,4 +74,6 @@ release-dry:
 
 # publish release to crates.io and push tag to github
 release:
-    cargo smart-release --update-crates-index --execute --changelog-without commit-statistics
+    cargo smart-release --update-crates-index --execute --changelog-without commit-statistics --no-tag
+    git tag v$(cargo pkgid | cut -d# -f2)
+    git push origin v$(cargo pkgid | cut -d# -f2)
