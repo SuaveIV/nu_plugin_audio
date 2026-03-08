@@ -42,6 +42,7 @@ const WIDTH_FULL: u16 = 80;
 const WIDTH_COMPACT: u16 = 50;
 const WIDTH_MINIMAL: u16 = 30;
 const WIDTH_BARE: u16 = 20;
+const MARQUEE_GAP: &str = "     ";
 
 /// Selects the glyph set used for the live progress display.
 ///
@@ -546,8 +547,7 @@ fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
                     if let Some(hdr) = &header {
                         let term_width = size().map(|(w, _)| w).unwrap_or(u16::MAX);
                         if term_width >= WIDTH_COMPACT && marquee_needed(hdr, term_width) {
-                            let gap = "     ";
-                            let cycle_len = hdr.chars().count() + gap.chars().count();
+                            let cycle_len = hdr.chars().count() + MARQUEE_GAP.chars().count();
                             scroll_offset = (scroll_offset + 1) % cycle_len;
                         }
                     }
@@ -571,7 +571,6 @@ fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
         };
         let rendered = render_progress(final_render_ctx);
         if rendered {
-            first_render = false;
         }
         Ok::<(), LabeledError>(())
     })();
@@ -687,12 +686,11 @@ fn render_progress(ctx: RenderProgressContext) -> bool {
             let _ = queue!(buf, MoveToColumn(0));
 
             if marquee_needed(hdr, term_width) {
-                let gap = "     ";
                 let mut current_width = 0;
                 let mut visible = String::new();
                 for c in hdr
                     .chars()
-                    .chain(gap.chars())
+                    .chain(MARQUEE_GAP.chars())
                     .cycle()
                     .skip(ctx.scroll_offset)
                 {
@@ -775,7 +773,7 @@ fn render_progress(ctx: RenderProgressContext) -> bool {
             let vol_bar_width = (bar_width / 3).max(min_vol);
             // Final guard: ensure bar_width + vol_bar_width never exceeds available.
             if bar_width + vol_bar_width > available {
-                bar_width = available.saturating_sub(vol_bar_width).max(10);
+                bar_width = available.saturating_sub(vol_bar_width);
             }
             (bar_width, vol_bar_width)
         } else {
