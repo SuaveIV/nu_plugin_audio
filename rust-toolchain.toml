@@ -1,3 +1,4 @@
+#:tombi schema.strict = false
 [toolchain]
 profile = "default"
 channel = "stable"

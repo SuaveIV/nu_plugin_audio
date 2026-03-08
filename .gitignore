@@ -1,2 +1,6 @@
 /target
 .vscode
+
+# Temp files
+./tmp
+./temp

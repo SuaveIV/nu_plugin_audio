@@ -36,7 +36,7 @@ cargo build --features=all-decoders
 
 ```nushell
 cargo build
-plugin add target/debug/nu_plugin_audio
+nu -c "plugin add target/debug/nu_plugin_audio"
 ```
 
 > You'll need to restart Nushell (or run `plugin use nu_plugin_audio`) after registering for the first time.
@@ -109,8 +109,23 @@ Breaking changes will be called out explicitly in the generated changelog.
 
 Releases are managed with [cargo-smart-release](https://github.com/Byron/gitoxide/tree/main/cargo-smart-release).
 
+### Prerequisites
+
+- Your working tree must be clean and you must be on `main`.
+- You need a branch protection bypass rule active for your account before pushing — enable it in **Settings → Rules → Rulesets**, run the release, then disable it again immediately after the tag push.
+
+### Steps
+
 ```bash
-cargo smart-release --update-crates-index --execute
+just release
+```
+
+Which runs:
+
+```bash
+cargo smart-release --update-crates-index --execute --changelog-without commit-statistics --no-tag
+git tag v$(cargo pkgid | cut -d# -f2)
+git push origin v$(cargo pkgid | cut -d# -f2)
 ```
 
 This will:
@@ -118,11 +133,71 @@ This will:
 1. Parse conventional commits since the last tag and write `CHANGELOG.md`
 2. Bump the version in `Cargo.toml`
 3. Publish to [crates.io](https://crates.io/crates/nu_plugin_audio)
-4. Push the commit and version tag to GitHub
+4. Push the version bump commit to `main`
+5. Create and push the version tag as a separate step
 
-The tag push then triggers the release CI, which builds platform binaries via cargo-dist and creates the GitHub release with the changelog as its body.
+The tag push triggers the Release CI, which builds platform binaries via cargo-dist and creates the GitHub release. Once the Release workflow completes, the ARM64 build fires automatically.
 
-> Make sure your working tree is clean and you're on `main` before running this.
+> The tag is pushed manually (via `--no-tag`) to avoid a race condition with cargo-dist's `pull_request` trigger, which would otherwise cause the Release workflow to run twice and corrupt the release.
+
+### After releasing
+
+- Disable your branch protection bypass.
+- Verify the GitHub release has all platform binaries attached.
+- The ARM64 build will attach its artifact automatically — check the Actions tab if it doesn't appear within a few minutes.
+
+---
+
+### Troubleshooting a failed release
+
+#### The Release workflow ran twice and the release is empty or missing artifacts
+
+This can happen if the tag was pushed before the version bump commit settled. The release may exist but have no binaries attached.
+
+1. Check whether the build artifacts were produced:
+
+```bash
+gh run list --repo SuaveIV/nu_plugin_audio --workflow=release.yml
+gh run download <run-id> --repo SuaveIV/nu_plugin_audio
+```
+
+1. If the artifacts exist, upload them manually:
+
+```nushell
+ls artifacts-build-local-*/ | where type == file | each { |f| cp $f.name ~/Downloads/release-artifacts/ }
+ls artifacts-build-global/ | where type == file | each { |f| cp $f.name ~/Downloads/release-artifacts/ }
+cd ~/Downloads/release-artifacts
+ls | where name != "global-dist-manifest.json" | each { |f| gh release upload <tag> $f.name --repo SuaveIV/nu_plugin_audio --clobber }
+```
+
+1. If the release itself is missing, recreate it from the dist manifest before uploading:
+
+```nushell
+open global-dist-manifest.json | get announcement_github_body | save /tmp/notes.txt
+gh release create <tag> --repo SuaveIV/nu_plugin_audio --title "<tag>" --notes-file /tmp/notes.txt --target <commit-sha>
+```
+
+#### The release needs to be fully rolled back
+
+You will need your branch protection bypass active for the tag delete and force push.
+
+```bash
+gh release delete <tag> --repo SuaveIV/nu_plugin_audio --yes
+git push origin :refs/tags/<tag>
+git tag -d <tag>
+git reset --hard HEAD~1
+git push origin main --force
+```
+
+> Note: if the version was already published to crates.io, you cannot republish the same version number. Yank it and bump to the next patch version instead.
+
+#### The ARM64 build did not trigger automatically
+
+Kick it off manually:
+
+```bash
+gh workflow run release-arm64.yml --repo SuaveIV/nu_plugin_audio --field tag=<tag>
+```
 
 ---
 
@@ -139,7 +214,7 @@ The tag push then triggers the release CI, which builds platform binaries via ca
 This project uses a [`Justfile`](Justfile) for common tasks. If you have [just](https://github.com/casey/just) installed:
 ```just --list``` to see all available recipes.
 
-The most useful ones for contributors are `just check` before committing and `just install` to test a local build in Nushell.
+The most useful ones for contributors are `just check` before committing and `just install-nx` / `just install-win` to install a local build in Nushell.
 
 ## Contributors
 
