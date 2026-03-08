@@ -2,6 +2,8 @@ name: Release ARM64
 
 permissions:
   contents: write
+  attestations: write
+  id-token: write
 
 on:
   workflow_dispatch:
@@ -69,3 +71,7 @@ jobs:
             nu_plugin_audio-${{ env.TAG }}-aarch64-unknown-linux-gnu.tar.gz
             nu_plugin_audio-${{ env.TAG }}-aarch64-unknown-linux-gnu.tar.gz.sha256
           tag_name: ${{ env.TAG }}
+      - name: Attest
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        with:
+          subject-path: "nu_plugin_audio-${{ env.TAG }}-aarch64-unknown-linux-gnu.tar.gz"
