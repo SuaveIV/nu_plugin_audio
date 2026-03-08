@@ -417,7 +417,7 @@ fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
     let mut paused = false;
     let mut volume = ctx.initial_volume;
     let mut pre_mute_volume = ctx.initial_volume;
-    let mut first_render = true;
+    let mut header_reserved = false;
     let mut scroll_offset: usize = 0;
 
     let _ = execute!(err, Hide);
@@ -538,14 +538,16 @@ fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
                     interactive,
                     icons: &ctx.icons,
                     header: header.as_deref(),
-                    first_render,
+                    header_reserved,
                     scroll_offset,
                 };
                 let rendered = render_progress(render_ctx);
                 if rendered {
-                    first_render = false;
                     if let Some(hdr) = &header {
                         let term_width = size().map(|(w, _)| w).unwrap_or(u16::MAX);
+                        if term_width >= WIDTH_COMPACT {
+                            header_reserved = true;
+                        }
                         if term_width >= WIDTH_COMPACT && marquee_needed(hdr, term_width) {
                             let cycle_len = hdr.chars().count() + MARQUEE_GAP.chars().count();
                             scroll_offset = (scroll_offset + 1) % cycle_len;
@@ -566,7 +568,7 @@ fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
             interactive,
             icons: &ctx.icons,
             header: header.as_deref(),
-            first_render,
+            header_reserved,
             scroll_offset,
         };
         render_progress(final_render_ctx);
@@ -576,7 +578,7 @@ fn wait_with_progress(ctx: WaitProgressContext) -> Result<(), LabeledError> {
     if interactive {
         let _ = disable_raw_mode();
     }
-    if header.is_some() {
+    if header_reserved {
         let _ = execute!(err, MoveToColumn(0), Clear(ClearType::CurrentLine));
         let _ = execute!(
             err,
@@ -608,7 +610,7 @@ struct RenderProgressContext<'a> {
     interactive: bool,
     icons: &'a IconSet,
     header: Option<&'a str>,
-    first_render: bool,
+    header_reserved: bool,
     scroll_offset: usize,
 }
 
@@ -673,7 +675,7 @@ fn render_progress(ctx: RenderProgressContext) -> bool {
 
     if let Some(hdr) = ctx.header {
         if term_width >= WIDTH_COMPACT {
-            if ctx.first_render {
+            if !ctx.header_reserved {
                 // Reserve a blank line that will become the header line.  The
                 // cursor ends up one line below it, which is exactly where the
                 // progress line lives from this point on.
