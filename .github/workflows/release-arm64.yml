@@ -1,8 +1,5 @@
 name: Release ARM64
 
-permissions:
-  contents: write
-
 on:
   workflow_dispatch:
     inputs:
@@ -16,6 +13,10 @@ on:
 jobs:
   build-arm64:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      attestations: write
+      id-token: write
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TAG: ${{ github.event.inputs.tag || github.ref_name }}
@@ -62,6 +63,10 @@ jobs:
             echo "Attempt $i/90: waiting..."
             sleep 10
           done
+      - name: Attest
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        with:
+          subject-path: "nu_plugin_audio-${{ env.TAG }}-aarch64-unknown-linux-gnu.tar.gz"
       - name: Upload to Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
