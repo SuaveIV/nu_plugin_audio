@@ -17,6 +17,7 @@ install-path = "CARGO_HOME"
 # Whether to install an updater program
 install-updater = false
 install-hint = "After installing, open Nushell and run:\n  plugin add <path-to-nu_plugin_audio>\n\n  On Unix-like systems: ~/.cargo/bin/nu_plugin_audio\n  On Windows: $env:USERPROFILE\\.cargo\\bin\\nu_plugin_audio.exe"
+pr-run-mode = "skip"
 
 [dist.dependencies.apt]
 libasound2-dev = "*"

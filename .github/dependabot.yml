@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"  # Weekly is fine for solo projects
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"  # Adjust to your timezone
+
+    # Group all nushell dependencies together
+    groups:
+      nushell:
+        patterns:
+          - "nu-*"
+
+    # Only keep a few PRs open at once
+    open-pull-requests-limit: 3
+
+    labels:
+      - "dependencies"
+
+    commit-message:
+      prefix: "chore"
+
+    # Auto-rebase if you push changes
+    rebase-strategy: "auto"
