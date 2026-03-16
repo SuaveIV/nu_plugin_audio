@@ -25,13 +25,17 @@ jobs:
     steps:
       - name: Resolve and validate tag
         id: resolve-tag
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag || '' }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          if [[ -n "${{ github.event.inputs.tag }}" ]]; then
-            TAG="${{ github.event.inputs.tag }}"
+          if [[ -n "$INPUT_TAG" ]]; then
+            TAG="$INPUT_TAG"
           else
-            TAG=$(gh api "repos/${{ github.repository }}/releases?per_page=1" --jq '.[0].tag_name // empty')
+            TAG=$(gh api "repos/${{ github.repository }}/releases?per_page=100" \
+              --jq "([.[] | select(.target_commitish == \"$HEAD_SHA\")][0].tag_name) // empty")
             if [[ -z "$TAG" ]]; then
-              echo "Error: Could not resolve release tag from API"
+              echo "Error: Could not resolve release tag for this workflow run"
               exit 1
             fi
           fi
@@ -39,7 +43,7 @@ jobs:
             echo "Error: Invalid tag format"
             exit 1
           fi
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          printf 'tag=%s\n' "$TAG" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ steps.resolve-tag.outputs.tag }}
