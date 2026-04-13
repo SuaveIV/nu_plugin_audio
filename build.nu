@@ -127,14 +127,10 @@ def download_and_install [
     log info extracting...
     let extract_ok: bool = try {
         if ($filename | str ends-with .zip) {
-            try {
-                (tar --extract --file $archive_path --directory $tmp_dir | complete).exit_code == 0
-            } catch {
-                if ($nu.os-info.name == windows) {
-                    (powershell -c $"Expand-Archive -Path '($archive_path)' -DestinationPath '($tmp_dir)' -Force" | complete).exit_code == 0
-                } else {
-                    (unzip -o $archive_path -d $tmp_dir | complete).exit_code == 0
-                }
+            if ($nu.os-info.name == windows) {
+                (powershell -c $"Expand-Archive -Path '($archive_path)' -DestinationPath '($tmp_dir)' -Force" | complete).exit_code == 0
+            } else {
+                (unzip -o $archive_path -d $tmp_dir | complete).exit_code == 0
             }
         } else if ($filename | str ends-with .tar.xz) {
             # Use tar's built-in xz support (--xz / -J) to avoid losing the
@@ -192,11 +188,15 @@ def check_and_download_prebuilt [
     try {
         http head $url
 
-        # Conditionally pass optional flags only when not null
+        # Conditionally pass optional flags for all combinations
         if ($filename != null) and ($install_root != null) and ($checksum_url != null) {
             download_and_install $url $name --filename $filename --install-root $install_root --checksum-url $checksum_url
         } else if ($filename != null) and ($install_root != null) {
             download_and_install $url $name --filename $filename --install-root $install_root
+        } else if ($filename != null) and ($checksum_url != null) {
+            download_and_install $url $name --filename $filename --checksum-url $checksum_url
+        } else if ($install_root != null) and ($checksum_url != null) {
+            download_and_install $url $name --install-root $install_root --checksum-url $checksum_url
         } else if ($filename != null) {
             download_and_install $url $name --filename $filename
         } else if ($install_root != null) {
