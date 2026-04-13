@@ -86,7 +86,7 @@ def download_and_install [
         let expected = if ($expected_checksum != null) {
             $expected_checksum
         } else if ($checksum_url != null) {
-            try { http get $checksum_url | str trim } catch {
+            try { http-get-with-retry $checksum_url | str trim } catch {
                 log warning $"failed to fetch checksum from ($checksum_url)"
                 try { rm --recursive --force $tmp_dir }
                 return false
