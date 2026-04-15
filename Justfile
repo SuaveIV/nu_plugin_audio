@@ -68,8 +68,9 @@ release:
         echo "Error: cargo-dist files were out of sync and have been updated."; \
         echo "Please commit these changes before running 'just release' again."; \
         exit 1; \
-    }    cargo smart-release --update-crates-index --execute --changelog-without commit-statistics --no-tag
-    let version = (cargo pkgid | str replace -r '.*#' '' | str replace -r '.*:' '');
+    }; \
+    cargo smart-release --update-crates-index --execute --changelog-without commit-statistics --no-tag; \
+    let version = (cargo pkgid | str replace -r '.*#' '' | str replace -r '.*:' ''); \
     git tag $"v($version)" -m $"Release v($version)"; \
     git push origin main; \
     git push origin $"v($version)"
