@@ -1,15 +1,9 @@
 # nu_plugin_audio justfile
 set shell := ["nu", "-c"]
-set shell := ["nu", "-c"]
 
 # list available recipes
 default:
     @just --list
-
-# verify if just is using nushell
-test-shell:
-    @echo $"Shell is (if ($nu != null) { 'Nushell' } else { 'Unknown' })"
-    @echo $"Version: (version | get version)"
 
 # verify if just is using nushell
 test-shell:
