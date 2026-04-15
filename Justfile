@@ -64,13 +64,12 @@ release-dry:
 release:
     @echo "Ensuring cargo-dist is in sync..."
     dist init --yes
-    @if (git status --porcelain .github/workflows/release.yml dist-workspace.toml); then \
+    @if (git status --porcelain .github/workflows/release.yml dist-workspace.toml | is-empty) == false { \
         echo "Error: cargo-dist files were out of sync and have been updated."; \
         echo "Please commit these changes before running 'just release' again."; \
         exit 1; \
-    fi
-    cargo smart-release --update-crates-index --execute --changelog-without commit-statistics --no-tag
-    @$version = (cargo pkgid | str replace -r '.*#' '' | str replace -r '.*:' ''); \
+    }    cargo smart-release --update-crates-index --execute --changelog-without commit-statistics --no-tag
+    @let version = (cargo pkgid | str replace -r '.*#' '' | str replace -r '.*:' '');
     git tag $"v($version)" -m $"Release v($version)"; \
     git push origin main; \
     git push origin $"v($version)"
