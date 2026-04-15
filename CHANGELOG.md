@@ -5,7 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.7 (2026-04-14)
+
+### New Features
+
+ - <csr-id-400f6fa8099da9011e1e5994db6eb37200e1087d/> enhance release process with sync check and version tagging
+
+### Bug Fixes
+
+ - <csr-id-937d547a335c2f41b8e50a60602a9019fabbe543/> add caret to commands in Justfile for proper execution
+ - <csr-id-fbf2df8ffc63d617a7331ae302149fe18eff0559/> ensure cargo-dist files are in sync before release
+ - <csr-id-db60cbfb45e3380db41428a5d6fcf5be31953852/> remove duplicate test-shell recipe from Justfile
+ - <csr-id-4f331fab2b9ee5ae8362cccad993a286c4805a4d/> sound meta signature and Justfile syntax
+   * feat: enhance release process with sync check and version tagging
+   
+   * fix(meta): allow Any input for 'sound meta' and fix description
+   
+   * fix: Justfile Nushell syntax and SoundMetaGetCmd type signature
+   
+   * Update Justfile
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **[#38](https://github.com/SuaveIV/nu_plugin_audio/issues/38)**
+    - Sound meta signature and Justfile syntax ([`4f331fa`](https://github.com/SuaveIV/nu_plugin_audio/commit/4f331fab2b9ee5ae8362cccad993a286c4805a4d))
+ * **Uncategorized**
+    - Add caret to commands in Justfile for proper execution ([`937d547`](https://github.com/SuaveIV/nu_plugin_audio/commit/937d547a335c2f41b8e50a60602a9019fabbe543))
+    - Ensure cargo-dist files are in sync before release ([`fbf2df8`](https://github.com/SuaveIV/nu_plugin_audio/commit/fbf2df8ffc63d617a7331ae302149fe18eff0559))
+    - Remove duplicate test-shell recipe from Justfile ([`db60cbf`](https://github.com/SuaveIV/nu_plugin_audio/commit/db60cbfb45e3380db41428a5d6fcf5be31953852))
+    - Enhance release process with sync check and version tagging ([`400f6fa`](https://github.com/SuaveIV/nu_plugin_audio/commit/400f6fa8099da9011e1e5994db6eb37200e1087d))
+</details>
+
 ## v0.2.6 (2026-04-13)
+
+<csr-id-3032429c408d49f1845eb74892624a4f0aac2f48/>
+<csr-id-a2ca52d0e1c35506f17a2bd97da8547029f965f4/>
+<csr-id-187da08880bfccd95ec1d336e841077c8b678685/>
+<csr-id-9d3010cacceabd79f4737a5edba0ee77df071312/>
+<csr-id-18d5cd21162dd980a5db104f2cfa69c672b6765f/>
+<csr-id-051fe87727d68817a0f2764cd50c0cc0306b3329/>
+<csr-id-568ce4cd2641e2ef136abc23a8b103bbf746d803/>
+<csr-id-b8f00a103722ceb5cb5efd078df77cbc4f547086/>
+<csr-id-8745780de8137a8fbd2a05f047d4571d5cd6e30b/>
+<csr-id-6964f18835a5f532d2f65ca4510f6b637d8563bf/>
+<csr-id-d448783bd8166c11c09218bf188239aa05cfd0b4/>
+<csr-id-87324c1ca5523c3caae9ec143111c631a8cf25b4/>
+<csr-id-2076bf2c8486ee0512ccdf52aab5511d20444ce5/>
+<csr-id-ccd7677f11e2c3e3b748b7e50eb8c98c6ea775fb/>
+<csr-id-1999f45c9b840472674f6032b79fef0fd11c9ad6/>
+<csr-id-853154d3789aba6d9264cf058bbdd5b9b43c0127/>
+<csr-id-bd49a2e90487338d61dc8a5f895147485d89f6f7/>
 
 ### Chore
 
@@ -130,6 +183,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-ccd7677f11e2c3e3b748b7e50eb8c98c6ea775fb/> update actions/checkout and action-gh-release versions in workflows
  - <csr-id-1999f45c9b840472674f6032b79fef0fd11c9ad6/> bump dependencies to 0.2.2 and update contributors
 
+### Chore
+
+ - <csr-id-7a29988cc255c7023494b2ff3d773bb20d84a12c/> update cargo-dist workflow and configuration
+
 ### Documentation
 
  - <csr-id-35391808753eadabcf468e7a94ae3686d1c780b8/> update installation instructions and add target details for prebuilt binaries
@@ -143,87 +200,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bug Fixes
 
+<csr-id-4eaa7954fee9a3580365c3816e18883b285f0965/>
+<csr-id-0933c1ba1c9d0c62eed125097a253c884e21e38d/>
+<csr-id-6b052a9ad884dac88b1e95a56dde237bda1f8cbb/>
+<csr-id-3ee6a030249ed1ced4d49f13e6a40ea659292257/>
+<csr-id-25785de4250463f915a80d14c67bf61b72deb4d2/>
+<csr-id-a94d52afe780b5788bb976498f53b4b06f95ef01/>
+<csr-id-9479ea0e9c291c17d279ad53e3d3a58760bd49a2/>
+<csr-id-69e331e56e017276e15b602e7be67b24e858c208/>
+<csr-id-af43fefe237f5d21f2345b2cad2113e6cedc6677/>
+<csr-id-02086f255b5afd6df785faf8c46a1772b53e5af1/>
+<csr-id-fc4cc50ab683b682990ef7208cd955464053e8a1/>
+<csr-id-2f382785c8218bacb0dcbafefb9fe35aab174d8b/>
+<csr-id-0969f0af5e2b01c1ad7f3ca312156c9b1f16c1e7/>
+<csr-id-d17767d9d9f6b1f485ad59fe2edfa6857f460010/>
+<csr-id-ba64249713b6857e7b6ffbb48098cde007d6ede5/>
+<csr-id-ecdc036370dddd81f5d1c4288d3fafc6e6f48958/>
+<csr-id-24b9e4a2346576ced214ef6d02aa23e719b41a03/>
+<csr-id-8d929dabd270b348149ecae7d99d7ff9a4b9edb2/>
+<csr-id-eef7f3f84ac88c53b37db56753a2d76c07f4f15f/>
+<csr-id-e52cc30ec7e468e0532eea5c452f5fbb3bbfc7aa/>
+
  - <csr-id-5b18f3d8e6cbfe3ad949b20e8a75f038512c100a/> resolve tag from API instead of workflow_run context
    * fix(ci): resolve tag from API instead of workflow_run context
-   
-   Removes head_branch as a tag source, which was attacker-controlled and
-   triggered CodeQL's untrusted-checkout and code-injection alerts. TAG is
-   now resolved from inputs.tag (manual dispatch) or the releases API
-   (workflow_run), validated, then passed via step output instead of
-   GITHUB_ENV.
-   
-   * fix(release): improve tag resolution from API and handle errors
-   
-   * fix(release): enhance tag resolution logic and improve error messaging
- - <csr-id-4eaa7954fee9a3580365c3816e18883b285f0965/> remove minimp3 decoder to resolve RUSTSEC-2025-0044
-   * fix: remove rodio/minimp3 from all-decoders (RUSTSEC-2025-0044)
-   
-   slice-ring-buffer has four unfixed double-free vulnerabilities (RUSTSEC-2025-0044).
-   It is pulled in transitively by rodio/minimp3. Symphonia already provides a
-   higher-quality MP3 decoder in the default feature set, so minimp3 is redundant.
-   
-   * fix: remove reference to minimp3 in README.md
- - <csr-id-0933c1ba1c9d0c62eed125097a253c884e21e38d/> update CONTRIBUTING guidelines and .gitignore for temp files
- - <csr-id-6b052a9ad884dac88b1e95a56dde237bda1f8cbb/> update release process to tag and push version after smart-release
- - <csr-id-3ee6a030249ed1ced4d49f13e6a40ea659292257/> trigger arm64 build after release workflow completes instead of on tag push
- - <csr-id-25785de4250463f915a80d14c67bf61b72deb4d2/> clear frozen header line when terminal narrows below compact tier
- - <csr-id-a94d52afe780b5788bb976498f53b4b06f95ef01/> track header-line reservation separately from first_render
- - <csr-id-9479ea0e9c291c17d279ad53e3d3a58760bd49a2/> continue check even if fmt or clippy fails
- - <csr-id-69e331e56e017276e15b602e7be67b24e858c208/> replace dev recipes with platform-specific install-nx/win variants
- - <csr-id-af43fefe237f5d21f2345b2cad2113e6cedc6677/> guarantee bar_width + vol_bar_width never exceeds available columns
- - <csr-id-02086f255b5afd6df785faf8c46a1772b53e5af1/> wrap plugin add calls with nu -c using portable double quotes
- - <csr-id-fc4cc50ab683b682990ef7208cd955464053e8a1/> wrap plugin add calls with nu -c
- - <csr-id-2f382785c8218bacb0dcbafefb9fe35aab174d8b/> simplify progress rendering logic in wait_with_progress function
- - <csr-id-0969f0af5e2b01c1ad7f3ca312156c9b1f16c1e7/> remove dead assignment, fix bar overflow, and deduplicate marquee gap
-   - Remove the dead `first_render = false` after the final render_progress
+* fix(release): improve tag resolution from API and handle errors
+* fix(release): enhance tag resolution logic and improve error messaging
+* fix: remove rodio/minimp3 from all-decoders (RUSTSEC-2025-0044)
+* fix: remove reference to minimp3 in README.md
+- Remove the dead `first_render = false` after the final render_progress
      call in wait_with_progress — the function returns immediately afterward
      so the assignment never had any effect
-   - Fix bar_width + vol_bar_width potentially exceeding available columns
+- Fix bar_width + vol_bar_width potentially exceeding available columns
      when the .max(10) clamp pushed bar_width back above the safe limit on
      narrow terminals; constrained is now computed first and .max(10) is
      not applied when available space is too small to honour it
-   - Extract the marquee gap string into a MARQUEE_GAP constant so the
+- Extract the marquee gap string into a MARQUEE_GAP constant so the
      scrolling math in wait_with_progress and the renderer in render_progress
      are guaranteed to use the same value; a mismatch between the two would
      have caused visible scroll drift
- - <csr-id-d17767d9d9f6b1f485ad59fe2edfa6857f460010/> degrade gracefully on narrow terminals and scroll long headers
-   - Replace the hard bail-out width guard with four layout tiers (full,
+- Replace the hard bail-out width guard with four layout tiers (full,
      compact, minimal, bare) so the progress display renders something
      useful at any terminal width rather than silently dropping frames
-   - Add marquee scrolling for artist/title headers that are too wide to
+- Add marquee scrolling for artist/title headers that are too wide to
      fit on one line; scroll_offset advances only on successful draws and
      freezes when the header fits statically
-   - Fix first_render tracking so MoveUp(1) is only emitted after a frame
+- Fix first_render tracking so MoveUp(1) is only emitted after a frame
      was actually drawn, preventing header duplication and output smear on
      narrow terminals
-   - Use unicode-width column counting in the marquee slicer instead of
+- Use unicode-width column counting in the marquee slicer instead of
      char counts to handle multibyte and CJK characters correctly
-   - Extract WIDTH_FULL, WIDTH_COMPACT, WIDTH_MINIMAL, WIDTH_BARE constants
+- Extract WIDTH_FULL, WIDTH_COMPACT, WIDTH_MINIMAL, WIDTH_BARE constants
      to replace the former MIN_RENDER_WIDTH magic number
-   - Change render_progress return type from () to bool to communicate
+- Change render_progress return type from () to bool to communicate
      whether a frame was actually drawn back to the caller
-   - Fix dead initial assignments for bar_width and vol_bar_width by
+- Fix dead initial assignments for bar_width and vol_bar_width by
      restructuring the size() block as an expression with an explicit
      fallback, eliminating the unused_assignments warnings
- - <csr-id-ba64249713b6857e7b6ffbb48098cde007d6ede5/> scope permissions to job level and attest before upload
- - <csr-id-ecdc036370dddd81f5d1c4288d3fafc6e6f48958/> add attestations permissions and implement artifact attestation in release workflow
-   Fixes SuaveIV/nu_plugin_audio#13
- - <csr-id-24b9e4a2346576ced214ef6d02aa23e719b41a03/> improve regex for updating dependency version format in Cargo.toml
- - <csr-id-8d929dabd270b348149ecae7d99d7ff9a4b9edb2/> update dependency version extraction logic and adjust commit message in PR creation
- - <csr-id-eef7f3f84ac88c53b37db56753a2d76c07f4f15f/> checkout requested tag on dispatch and handle dev-dependency table form
- - <csr-id-e52cc30ec7e468e0532eea5c452f5fbb3bbfc7aa/> fix nushell script bugs and upgrade to 0.111.0
-   - Replace `str matches` with `=~` operator (command does not exist)
-   - Replace string `+` concatenation with `$"..."` interpolation
-   - Fix `| let name: type` pipeline annotation (unsupported form)
-   - Fix `.dev-dependencies?` dot access ambiguity with `get "dev-dependencies"?`
-   - Replace `$it` in `where` with explicit closure for 0.111 compatibility
-   - Prefix external `cargo` calls with `^` to prevent shadowing
-   - Open Cargo.toml once with `--raw` and derive parsed form via `from toml`
-   - Escape `$dep` before regex interpolation to handle metacharacters
-   - Fix `{escaped_dep}` and `{sanitized_plugin_version}` bare braces to `($var)`
-   - Wrap `let nu_deps` pipeline in outer parens for correct parse
-   - Simplify `validate-version-format` to single `=~` check
-   - Remove unreachable `null` after `return` in `http-get-with-retry`
+- Replace `str matches` with `=~` operator (command does not exist)
+- Replace string `+` concatenation with `$"..."` interpolation
+- Fix `| let name: type` pipeline annotation (unsupported form)
+- Fix `.dev-dependencies?` dot access ambiguity with `get "dev-dependencies"?`
+- Replace `$it` in `where` with explicit closure for 0.111 compatibility
+- Prefix external `cargo` calls with `^` to prevent shadowing
+- Open Cargo.toml once with `--raw` and derive parsed form via `from toml`
+- Escape `$dep` before regex interpolation to handle metacharacters
+- Fix `{escaped_dep}` and `{sanitized_plugin_version}` bare braces to `($var)`
+- Wrap `let nu_deps` pipeline in outer parens for correct parse
+- Simplify `validate-version-format` to single `=~` check
+- Remove unreachable `null` after `return` in `http-get-with-retry`
 
 ### Other
 
@@ -284,6 +328,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  * **[#36](https://github.com/SuaveIV/nu_plugin_audio/issues/36)**
     - Upgrade dependencies and bump to v0.2.4 ([`bd49a2e`](https://github.com/SuaveIV/nu_plugin_audio/commit/bd49a2e90487338d61dc8a5f895147485d89f6f7))
  * **Uncategorized**
+    - Update cargo-dist workflow and configuration ([`7a29988`](https://github.com/SuaveIV/nu_plugin_audio/commit/7a29988cc255c7023494b2ff3d773bb20d84a12c))
+    - Release nu_plugin_audio v0.2.6 ([`475f6a4`](https://github.com/SuaveIV/nu_plugin_audio/commit/475f6a4e4ec657c4ed4416dd582cbb4c5acec8ee))
     - Update version to 0.2.5 in Cargo.toml and Cargo.lock ([`853154d`](https://github.com/SuaveIV/nu_plugin_audio/commit/853154d3789aba6d9264cf058bbdd5b9b43c0127))
     - Create codeql.yml ([`e46f380`](https://github.com/SuaveIV/nu_plugin_audio/commit/e46f380e14d6773ea2a5763dea02e8f6f8acd723))
     - Remove CodeQL workflow for Rust analysis ([`18d5cd2`](https://github.com/SuaveIV/nu_plugin_audio/commit/18d5cd21162dd980a5db104f2cfa69c672b6765f))
@@ -323,6 +369,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Add checksum verification for downloaded binaries ([`df0b440`](https://github.com/SuaveIV/nu_plugin_audio/commit/df0b440ab98843c02b2dc236a8fa33f9cb08d9da))
     - Add checksum generation and include in release upload ([`639724b`](https://github.com/SuaveIV/nu_plugin_audio/commit/639724bd386a7fe20c92774f0944b76f3cba451f))
 </details>
+
+<csr-unknown>
+Removes head_branch as a tag source, which was attacker-controlled andtriggered CodeQL’s untrusted-checkout and code-injection alerts. TAG isnow resolved from inputs.tag (manual dispatch) or the releases API(workflow_run), validated, then passed via step output instead ofGITHUB_ENV. remove minimp3 decoder to resolve RUSTSEC-2025-0044slice-ring-buffer has four unfixed double-free vulnerabilities (RUSTSEC-2025-0044).It is pulled in transitively by rodio/minimp3. Symphonia already provides ahigher-quality MP3 decoder in the default feature set, so minimp3 is redundant. update CONTRIBUTING guidelines and .gitignore for temp files update release process to tag and push version after smart-release trigger arm64 build after release workflow completes instead of on tag push clear frozen header line when terminal narrows below compact tier track header-line reservation separately from first_render continue check even if fmt or clippy fails replace dev recipes with platform-specific install-nx/win variants guarantee bar_width + vol_bar_width never exceeds available columns wrap plugin add calls with nu -c using portable double quotes wrap plugin add calls with nu -c simplify progress rendering logic in wait_with_progress function remove dead assignment, fix bar overflow, and deduplicate marquee gap degrade gracefully on narrow terminals and scroll long headers scope permissions to job level and attest before upload add attestations permissions and implement artifact attestation in release workflowFixes SuaveIV/nu_plugin_audio#13 improve regex for updating dependency version format in Cargo.toml update dependency version extraction logic and adjust commit message in PR creation checkout requested tag on dispatch and handle dev-dependency table form fix nushell script bugs and upgrade to 0.111.0<csr-unknown/>
 
 ## v0.2.2 (2026-03-05)
 
@@ -372,8 +421,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-id-a2eda3f6b11eaefc0235efc777f8531b34f334c0/>
 <csr-id-8f3c1ec53d218acada8a05945d199bab30793c0c/>
-
-
 
 ### Documentation
 
@@ -452,16 +499,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Update dependencies and enhance audio handling ([`c79d8d3`](https://github.com/SuaveIV/nu_plugin_audio/commit/c79d8d369c286a89a3f52177c622f43e1cbcd91e))
 </details>
 
-<csr-unknown>
-
-
-<csr-unknown/>
-
 ## v0.1.0 (2026-03-03)
 
 <csr-id-43528fc4d388c45aebd99bf178f7251085f1dabe/>
-
-
 
 ### Chore
 
@@ -486,7 +526,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
 
 
-<csr-id-c1c286ac414b18310e699856e77f9b021989c6bb/>
 <csr-id-8301c35d75314be1c3159c436c3c285a81cad1d4/>
 <csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
 
@@ -563,7 +602,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
 
 
-<csr-id-20822a1287b050b8c093daa38a355a03fb1639b1/>
 <csr-id-18bb887257f46def5650105ac9b05d6e5287dfe4/>
 <csr-id-96e495a96b6a7caa7698545d081addc0887db9a5/>
 <csr-id-23da40b935119528871e06950ed6e0ea264c6e73/>
@@ -606,11 +644,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-9e71bea71ac2fb76fa3a569b0dd292ed13a80aea/> expand TAG_MAP, expose FileProperties, artwork, and fix duration
    - TAG_MAP: HashMap → BTreeMap; add 22 new keys (comment, lyrics, label,
    producer, remixer, replaygain_*, compilation, barcode, script, etc.)
-- Space to toggle play/pause
-- Left/Right (or h/l) to seek
-- Up/Down (or k/j) to adjust volume
-- 'm' to toggle mute
-- 'q' or Esc to quit
 
 ### Bug Fixes
 
@@ -783,37 +816,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 </details>
 
 <csr-unknown>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<csr-unknown/>
+Space to toggle play/pauseLeft/Right (or h/l) to seekUp/Down (or k/j) to adjust volume‘m’ to toggle mute‘q’ or Esc to quit<csr-unknown/>
 
 ## v0.109.1 (2025-12-03)
 
@@ -937,7 +940,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
 
 
-<csr-id-45bd16201b4d9918fe86fa820ea07026f94caab9/>
 <csr-id-9119a1d3f8c6c64a96aea770b20ed0013a8dafbc/>
 <csr-id-a67c093edcf0e9005f134e2d821a44ff8420f092/>
 <csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/>
@@ -1104,8 +1106,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v0.1.1 (2023-11-07)
 
 <csr-id-0e2b1039d49a088f0f9de18585019ff0b642d313/>
-
-
 
 ### Other
 
