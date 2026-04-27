@@ -27,7 +27,7 @@ log = "0.4"
 version = "0.29"
 
 [dependencies.nu-plugin]
-version = "0.112.0"
+version = "0.112.2"
 
 [dependencies.nu-protocol]
 version = "0.112.0"
