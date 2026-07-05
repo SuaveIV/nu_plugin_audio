@@ -84,9 +84,5 @@ jobs:
         with:
           subject-path: "nu_plugin_audio-${{ steps.resolve-tag.outputs.tag }}-aarch64-unknown-linux-gnu.tar.gz"
       - name: Upload to Release
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
-        with:
-          files: |
-            nu_plugin_audio-${{ steps.resolve-tag.outputs.tag }}-aarch64-unknown-linux-gnu.tar.gz
-            nu_plugin_audio-${{ steps.resolve-tag.outputs.tag }}-aarch64-unknown-linux-gnu.tar.gz.sha256
-          tag_name: ${{ steps.resolve-tag.outputs.tag }}
+        run: |
+          gh release upload ${{ steps.resolve-tag.outputs.tag }} nu_plugin_audio-${{ steps.resolve-tag.outputs.tag }}-aarch64-unknown-linux-gnu.tar.gz nu_plugin_audio-${{ steps.resolve-tag.outputs.tag }}-aarch64-unknown-linux-gnu.tar.gz.sha256
