@@ -69,9 +69,7 @@ impl SimplePluginCommand for SoundMetaGetCmd {
 
     fn signature(&self) -> Signature {
         Signature::new("sound meta")
-            .input_output_types(vec![
-                (Type::Any, Type::Record(vec![].into())),
-            ])
+            .input_output_types(vec![(Type::Any, Type::Record(vec![].into()))])
             .switch("all", "List all possible frame names", Some('a'))
             .optional("File Path", SyntaxShape::Filepath, "file to read")
             .category(Category::Experimental)

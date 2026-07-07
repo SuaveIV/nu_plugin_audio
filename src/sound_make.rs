@@ -149,6 +149,7 @@ fn generate_wav(frequency: f32, duration: Duration, amplify: f32) -> Result<Vec<
     let sample_rate = source.sample_rate().get();
     let num_channels = source.channels().get();
 
+    #[allow(clippy::unnecessary_cast)]
     let samples: Vec<i16> = source
         .map(|s| ((s as f64).clamp(-1.0, 1.0) * i16::MAX as f64).round() as i16)
         .collect();
