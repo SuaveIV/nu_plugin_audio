@@ -5,7 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.9 (2026-07-07)
+
+### Chore
+
+ - <csr-id-0fd7e2f50d931fd28279cd50819d33e0659477ee/> upgrade to nushell 0.114.0 and fix compile issues
+   * chore(deps): upgrade nushell to 0.114.0
+   
+   Updates the plugin dependencies to target Nushell 0.114.0. Also addresses formatting and clippy warnings triggered by the toolchain update.
+   
+   * fix(sound-make): resolve float type mismatch in sample conversion
+   
+   Casts the sample value to f64 explicitly during conversion to support f32 samples under the lite feature set.
+   
+   * chore(git): ignore .agents folder
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **[#56](https://github.com/SuaveIV/nu_plugin_audio/issues/56)**
+    - Upgrade to nushell 0.114.0 and fix compile issues ([`0fd7e2f`](https://github.com/SuaveIV/nu_plugin_audio/commit/0fd7e2f50d931fd28279cd50819d33e0659477ee))
+</details>
+
 ## v0.2.8 (2026-07-04)
+
+<csr-id-4824e2eed222ea4dfa6cb906dd897791e5bef937/>
 
 ### Chore
 
@@ -30,6 +57,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  * **[#52](https://github.com/SuaveIV/nu_plugin_audio/issues/52)**
     - Update dependencies and workflows ([`4824e2e`](https://github.com/SuaveIV/nu_plugin_audio/commit/4824e2eed222ea4dfa6cb906dd897791e5bef937))
+ * **Uncategorized**
+    - Release nu_plugin_audio v0.2.8 ([`0f9a03b`](https://github.com/SuaveIV/nu_plugin_audio/commit/0f9a03b7fad4cc41cd88ae95471e1baca8ce2564))
 </details>
 
 ## v0.2.7 (2026-04-14)
@@ -551,7 +580,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
 
 
-<csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
 
 ### Documentation
 
@@ -626,7 +654,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
 
 
-<csr-id-96e495a96b6a7caa7698545d081addc0887db9a5/>
 <csr-id-23da40b935119528871e06950ed6e0ea264c6e73/>
 <csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/>
 <csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/>
@@ -960,7 +987,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
 
 
-<csr-id-a67c093edcf0e9005f134e2d821a44ff8420f092/>
 <csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/>
 <csr-id-e2061a932043792ca517478a367f6eb991d56c05/>
 <csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/>
