@@ -73,7 +73,7 @@ release-dry:
 # publish release to crates.io and push tag to github
 release:
     @echo "Ensuring cargo-dist is in sync..."
-    ^dist init --yes
+    ^dist generate
     @if (^git status --porcelain .github/workflows/release.yml dist-workspace.toml | is-not-empty) { \
         echo "Error: cargo-dist files were out of sync and have been updated."; \
         echo "Please commit these changes before running 'just release' again."; \
