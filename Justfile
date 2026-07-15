@@ -18,7 +18,7 @@ check:
 
 # check TOML formatting with tombi
 check-toml:
-    ^tombi check Cargo.toml dist-workspace.toml Cross.toml rust-toolchain.toml
+    ^tombi lint Cargo.toml dist-workspace.toml Cross.toml rust-toolchain.toml
 
 # format TOML files with tombi
 format-toml:

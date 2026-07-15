@@ -12,6 +12,9 @@ ci = "github"
 # The installers to generate for each app
 installers = ["shell", "powershell"]
 # Target platforms to build apps for (Rust target-triple syntax)
+# NOTE: aarch64-unknown-linux-gnu is excluded here because ALSA dependencies prevent
+# cargo-dist cross-compilation. See .github/workflows/release-arm64.yml for the
+# workflow that builds and uploads the ARM64 artifact.
 targets = [
   "aarch64-apple-darwin",
   "x86_64-apple-darwin",
@@ -35,4 +38,4 @@ pkg-config = "*"
 "actions/upload-artifact" = "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
 "actions/download-artifact" = "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
 "actions/attest-build-provenance" = "0f67c3f4856b2e3261c31976d6725780e5e4c373"
-"actions/attest" = "075d9d9f58257041a6701b2a939e6a048a1c93a0"
+"actions/attest" = "a1948c3f048ba23858d222213b7c278aabede763"

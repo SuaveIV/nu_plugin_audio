@@ -1,7 +1,16 @@
 /target
-.vscode
+.vscode/
+
+# Python / uv virtual environments
+.venv/
+venv/
+
+# Backup and log files
+**/*.rs.bk
+*.log
 
 # Temp files
-./tmp
-./temp
+tmp/
+temp/
 .agents/
+
