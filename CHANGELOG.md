@@ -5,7 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.10 (2026-07-15)
+
+### Chore
+
+ - <csr-id-412b9f6688eeda1588822b889d9c8a628b4c1ea8/> fix 'just release' by using 'dist generate' and enforcing LF line endings
+   - Change 'dist init --yes' to 'dist generate' in the release recipe to prevent stripping config comments.
+   - Create .gitattributes to enforce LF on yml, yaml, and toml files, preventing Windows CRLF dirty status.
+ - <csr-id-6ead588081e9d36adcdc66d761980e8a6d276b2f/> upgrade Nushell to 0.114.1 and update cargo-dist release config
+   * chore: update dependencies, configure CI release workflow, and add TOML maintenance tools
+   
+   * chore: correct tombi subcommand, fix attest action SHA, and update ignores
+   
+   - Update Justfile to run `tombi lint` instead of the unsupported `tombi check`
+   - Fix `actions/attest` SHA in dist-workspace.toml and regenerate release.yml
+   - Add target documentation comment for aarch64-unknown-linux-gnu in dist-workspace.toml
+   - Add Python/uv virtual environments, logs, and rust backups to .gitignore
+   
+   * chore: run apt-get update before installing ALSA in CodeQL workflow
+   
+   Avoid 404 errors when installing libasound2-dev by updating package indexes first.
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **[#58](https://github.com/SuaveIV/nu_plugin_audio/issues/58)**
+    - Upgrade Nushell to 0.114.1 and update cargo-dist release config ([`6ead588`](https://github.com/SuaveIV/nu_plugin_audio/commit/6ead588081e9d36adcdc66d761980e8a6d276b2f))
+ * **Uncategorized**
+    - Fix 'just release' by using 'dist generate' and enforcing LF line endings ([`412b9f6`](https://github.com/SuaveIV/nu_plugin_audio/commit/412b9f6688eeda1588822b889d9c8a628b4c1ea8))
+</details>
+
 ## v0.2.9 (2026-07-07)
+
+<csr-id-0fd7e2f50d931fd28279cd50819d33e0659477ee/>
 
 ### Chore
 
@@ -28,6 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  * **[#56](https://github.com/SuaveIV/nu_plugin_audio/issues/56)**
     - Upgrade to nushell 0.114.0 and fix compile issues ([`0fd7e2f`](https://github.com/SuaveIV/nu_plugin_audio/commit/0fd7e2f50d931fd28279cd50819d33e0659477ee))
+ * **Uncategorized**
+    - Release nu_plugin_audio v0.2.9 ([`228daa2`](https://github.com/SuaveIV/nu_plugin_audio/commit/228daa2b6d9acd8d9f999951a9395ff30f580278))
 </details>
 
 ## v0.2.8 (2026-07-04)
@@ -579,8 +616,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-8301c35d75314be1c3159c436c3c285a81cad1d4/>
 <csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
 
-
-
 ### Documentation
 
  - <csr-id-ad7d2ca9314bc7675f18df2cd75846e0f40410f7/> update installation instructions
@@ -654,7 +689,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
 
 
-<csr-id-23da40b935119528871e06950ed6e0ea264c6e73/>
 <csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/>
 <csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/>
 <csr-id-0f09882df564029b14cdd0893214988c7de2b64d/>
@@ -987,7 +1021,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
 
 
-<csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/>
 <csr-id-e2061a932043792ca517478a367f6eb991d56c05/>
 <csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/>
 <csr-id-e3bad554084913238986cd3621eaeef10ce493ea/>
