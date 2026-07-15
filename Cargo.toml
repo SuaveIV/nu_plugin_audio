@@ -3,16 +3,16 @@ name = "nu_plugin_audio"
 version = "0.2.9"
 edition = "2021"
 description = "A nushell plugin to make and play sounds"
+readme = "README.md"
 homepage = "https://github.com/SuaveIV/nu_plugin_audio"
 repository = "https://github.com/SuaveIV/nu_plugin_audio"
-readme = "README.md"
 license = "MIT"
 keywords = [
-    "nushell",
-    "audio",
-    "mp3",
-    "player",
-    "plugin",
+  "audio",
+  "mp3",
+  "nushell",
+  "player",
+  "plugin",
 ]
 
 [package.metadata]
@@ -26,11 +26,14 @@ log = "0.4"
 [dependencies.crossterm]
 version = "0.29"
 
+[dependencies.lofty]
+version = "0.24"
+
 [dependencies.nu-plugin]
-version = "0.114.0"
+version = "0.114.1"
 
 [dependencies.nu-protocol]
-version = "0.114.0"
+version = "0.114.1"
 features = ["plugin"]
 
 [dependencies.rodio]
@@ -40,37 +43,34 @@ default-features = false
 [dependencies.unicode-width]
 version = "0.2"
 
-[dependencies.lofty]
-version = "0.24"
-
 [features]
 default = [
-    "rodio/playback",
-    "rodio/symphonia-all",
-    "rodio/dither",
-    "rodio/symphonia-simd",
-    "rodio/64bit",
-    "rodio/recording",
-    "rodio/wav_output",
-    "rodio/experimental",
+  "rodio/64bit",
+  "rodio/dither",
+  "rodio/experimental",
+  "rodio/playback",
+  "rodio/recording",
+  "rodio/symphonia-all",
+  "rodio/symphonia-simd",
+  "rodio/wav_output",
 ]
 
 lite = [
-    "rodio/playback",
-    "rodio/flac",
-    "rodio/vorbis",
-    "rodio/wav",
-    "rodio/symphonia-mp3",
+  "rodio/flac",
+  "rodio/playback",
+  "rodio/symphonia-mp3",
+  "rodio/vorbis",
+  "rodio/wav",
 ]
 
 # Retained as an alias for backwards compatibility
 all-decoders = ["default"]
 
 [profile.release]
-codegen-units = 1
-lto = true
 opt-level = 2
 strip = true
+lto = true
+codegen-units = 1
 
 # The profile that 'dist' will build with
 [profile.dist]

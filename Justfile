@@ -14,11 +14,21 @@ test-shell:
 check:
     -^cargo fmt --check
     -^cargo clippy
+    -just check-toml
+
+# check TOML formatting with tombi
+check-toml:
+    ^tombi lint Cargo.toml dist-workspace.toml Cross.toml rust-toolchain.toml
+
+# format TOML files with tombi
+format-toml:
+    ^tombi format Cargo.toml dist-workspace.toml Cross.toml rust-toolchain.toml
 
 # fix clippy warnings and format
 fix:
     ^cargo clippy --fix --allow-dirty
     ^cargo fmt
+    just format-toml
 
 # build (default features)
 build:
