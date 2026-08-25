@@ -5,7 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.11 (2026-08-25)
+
+### Chore
+
+ - <csr-id-580864347febbaac151d1a79d8bc494548823f3c/> bump nu to 0.115.1, lofty to 0.25.1, actions
+   - nu-plugin / nu-protocol: 0.114.1 -> 0.115.1 (no plugin API changes affected)
+   - lofty: 0.24 -> 0.25.1 (breaking changes don't touch our usage)
+   - codeql-action: v4.37.4 -> v4.37.8, converted to SHA-pinned for consistency
+   - attest-build-provenance: v4.1.1 -> v4.2.2 (release-arm64.yml + dist config)
+   - actions/attest: v4.2.1 -> v4.2.2 (via dist-workspace.toml, release.yml regenerated)
+   - checkout, upload-artifact, download-artifact already at latest
+ - <csr-id-57bdd6c0dbff6fa91d4e75fb29a09e5f8c975e9f/> update GitHub Actions via dist-workspace.toml and dist generate
+   Bump actions/checkout to 7.0.1 and actions/attest to 4.2.1 in dist-workspace.toml,
+   regenerate release.yml via dist generate, and update codeql.yml and release-arm64.yml.
+ - <csr-id-e477f5ad6f708dad6bd85d8166d1c8295f200a82/> bump github/codeql-action from 4 to 4.37.4
+   Bumps [github/codeql-action](https://github.com/github/codeql-action) from 4 to 4.37.4.
+   - [Release notes](https://github.com/github/codeql-action/releases)
+   - [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)
+   - [Commits](https://github.com/github/codeql-action/compare/v4...v4.37.4)
+   
+   ---
+   updated-dependencies:
+   - dependency-name: github/codeql-action
+     dependency-version: 4.37.4
+     dependency-type: direct:production
+     update-type: version-update:semver-minor
+   ...
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **[#61](https://github.com/SuaveIV/nu_plugin_audio/issues/61)**
+    - Bump github/codeql-action from 4 to 4.37.4 ([`e477f5a`](https://github.com/SuaveIV/nu_plugin_audio/commit/e477f5ad6f708dad6bd85d8166d1c8295f200a82))
+ * **Uncategorized**
+    - Bump nu to 0.115.1, lofty to 0.25.1, actions ([`5808643`](https://github.com/SuaveIV/nu_plugin_audio/commit/580864347febbaac151d1a79d8bc494548823f3c))
+    - Update GitHub Actions via dist-workspace.toml and dist generate ([`57bdd6c`](https://github.com/SuaveIV/nu_plugin_audio/commit/57bdd6c0dbff6fa91d4e75fb29a09e5f8c975e9f))
+</details>
+
 ## v0.2.10 (2026-07-15)
+
+<csr-id-412b9f6688eeda1588822b889d9c8a628b4c1ea8/>
+<csr-id-6ead588081e9d36adcdc66d761980e8a6d276b2f/>
 
 ### Chore
 
@@ -35,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  * **[#58](https://github.com/SuaveIV/nu_plugin_audio/issues/58)**
     - Upgrade Nushell to 0.114.1 and update cargo-dist release config ([`6ead588`](https://github.com/SuaveIV/nu_plugin_audio/commit/6ead588081e9d36adcdc66d761980e8a6d276b2f))
  * **Uncategorized**
+    - Release nu_plugin_audio v0.2.10 ([`d9256f5`](https://github.com/SuaveIV/nu_plugin_audio/commit/d9256f572dac519de61553ab6ab610d21f571a4a))
     - Fix 'just release' by using 'dist generate' and enforcing LF line endings ([`412b9f6`](https://github.com/SuaveIV/nu_plugin_audio/commit/412b9f6688eeda1588822b889d9c8a628b4c1ea8))
 </details>
 
@@ -689,7 +734,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
 
 
-<csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/>
 <csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/>
 <csr-id-0f09882df564029b14cdd0893214988c7de2b64d/>
 <csr-id-79412a36e5f154ade35215826dda808c69d2a7fa/>
@@ -1021,7 +1065,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
 
 
-<csr-id-e2061a932043792ca517478a367f6eb991d56c05/>
 <csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/>
 <csr-id-e3bad554084913238986cd3621eaeef10ce493ea/>
 <csr-id-1c3a1b798dc0875af9dded383aa143e3566652b2/>
