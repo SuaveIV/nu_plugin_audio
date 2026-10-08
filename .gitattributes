@@ -1,4 +1,26 @@
-# Enforce LF line endings for GitHub Actions workflows and configuration files
-*.yml text eol=lf
+# Normalize every text file to LF in the repository and working tree.
+# Dev happens in WSL2 (LF-native). Rust, Cargo, TOML, Nushell (build.nu),
+# just, and cargo-dist all build fine on Windows with LF, so we do not
+# force CRLF for regular files.
+* text=auto eol=lf
+
+# GitHub Actions workflows / config (CodeQL is line-ending sensitive).
+# Redundant under the rule above, but kept explicit and self-documenting.
+*.yml  text eol=lf
 *.yaml text eol=lf
 *.toml text eol=lf
+
+# Windows-only script types that require CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Never tamper with these — treat as binary regardless of content sniffing.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
