@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.12 (2026-10-07)
+
+### Chore
+
+ - <csr-id-d73ab2759bfa02b708735220b9e550f7f0febacf/> update to nushell 0.116.1
+   - nu-plugin / nu-protocol: 0.115.1 -> 0.116.1 (no plugin API changes
+     affected our usage)
+   - build.nu: import via `use std/log` so the `log info` / `log warning`
+     subcommands resolve under 0.116
+   - nupm.nuon: sync package version with the upcoming release
+ - <csr-id-24c2630c1f186b7fdab0e817b7da35396794b8dc/> normalize line endings to LF via .gitattributes
+   Enforce text=auto eol=lf repo-wide so WSL2 and Windows builds see
+   identical LF content. Keep yml/yaml/toml explicit (CodeQL is line-ending
+   sensitive), add CRLF exceptions for Windows script types (.bat/.cmd/.ps1),
+   and mark common binary types as binary.
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **[#83](https://github.com/SuaveIV/nu_plugin_audio/issues/83)**
+    - Update to nushell 0.116.1 ([`d73ab27`](https://github.com/SuaveIV/nu_plugin_audio/commit/d73ab2759bfa02b708735220b9e550f7f0febacf))
+ * **Uncategorized**
+    - Normalize line endings to LF via .gitattributes ([`24c2630`](https://github.com/SuaveIV/nu_plugin_audio/commit/24c2630c1f186b7fdab0e817b7da35396794b8dc))
+</details>
+
 ## v0.2.11 (2026-08-25)
 
 ### Chore
@@ -28,9 +56,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    ---
    updated-dependencies:
    - dependency-name: github/codeql-action
-     dependency-version: 4.37.4
-     dependency-type: direct:production
-     update-type: version-update:semver-minor
+   dependency-version: 4.37.4
+   dependency-type: direct:production
+   update-type: version-update:semver-minor
    ...
 
 ### Commit Details
@@ -42,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  * **[#61](https://github.com/SuaveIV/nu_plugin_audio/issues/61)**
     - Bump github/codeql-action from 4 to 4.37.4 ([`e477f5a`](https://github.com/SuaveIV/nu_plugin_audio/commit/e477f5ad6f708dad6bd85d8166d1c8295f200a82))
  * **Uncategorized**
+    - Release nu_plugin_audio v0.2.11 ([`e32e74c`](https://github.com/SuaveIV/nu_plugin_audio/commit/e32e74cbf06c21601b290de7c16c6090228f5fe6))
     - Bump nu to 0.115.1, lofty to 0.25.1, actions ([`5808643`](https://github.com/SuaveIV/nu_plugin_audio/commit/580864347febbaac151d1a79d8bc494548823f3c))
     - Update GitHub Actions via dist-workspace.toml and dist generate ([`57bdd6c`](https://github.com/SuaveIV/nu_plugin_audio/commit/57bdd6c0dbff6fa91d4e75fb29a09e5f8c975e9f))
 </details>
@@ -50,25 +79,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-id-412b9f6688eeda1588822b889d9c8a628b4c1ea8/>
 <csr-id-6ead588081e9d36adcdc66d761980e8a6d276b2f/>
-
-### Chore
-
- - <csr-id-412b9f6688eeda1588822b889d9c8a628b4c1ea8/> fix 'just release' by using 'dist generate' and enforcing LF line endings
-   - Change 'dist init --yes' to 'dist generate' in the release recipe to prevent stripping config comments.
-   - Create .gitattributes to enforce LF on yml, yaml, and toml files, preventing Windows CRLF dirty status.
- - <csr-id-6ead588081e9d36adcdc66d761980e8a6d276b2f/> upgrade Nushell to 0.114.1 and update cargo-dist release config
-   * chore: update dependencies, configure CI release workflow, and add TOML maintenance tools
-   
-   * chore: correct tombi subcommand, fix attest action SHA, and update ignores
-   
-   - Update Justfile to run `tombi lint` instead of the unsupported `tombi check`
-   - Fix `actions/attest` SHA in dist-workspace.toml and regenerate release.yml
-   - Add target documentation comment for aarch64-unknown-linux-gnu in dist-workspace.toml
-   - Add Python/uv virtual environments, logs, and rust backups to .gitignore
-   
-   * chore: run apt-get update before installing ALSA in CodeQL workflow
-   
-   Avoid 404 errors when installing libasound2-dev by updating package indexes first.
 
 ### Commit Details
 
@@ -87,19 +97,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-id-0fd7e2f50d931fd28279cd50819d33e0659477ee/>
 
-### Chore
-
- - <csr-id-0fd7e2f50d931fd28279cd50819d33e0659477ee/> upgrade to nushell 0.114.0 and fix compile issues
-   * chore(deps): upgrade nushell to 0.114.0
-   
-   Updates the plugin dependencies to target Nushell 0.114.0. Also addresses formatting and clippy warnings triggered by the toolchain update.
-   
-   * fix(sound-make): resolve float type mismatch in sample conversion
-   
-   Casts the sample value to f64 explicitly during conversion to support f32 samples under the lite feature set.
-   
-   * chore(git): ignore .agents folder
-
 ### Commit Details
 
 <csr-read-only-do-not-edit/>
@@ -115,21 +112,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v0.2.8 (2026-07-04)
 
 <csr-id-4824e2eed222ea4dfa6cb906dd897791e5bef937/>
-
-### Chore
-
- - <csr-id-4824e2eed222ea4dfa6cb906dd897791e5bef937/> update dependencies and workflows
-   * chore: update dependencies and workflows
-   
-   Bumping nu-plugin and nu-protocol to 0.113.1 to close #51. I also rolled in all the open dependabot bumps for chrono, log, and the github actions workflows so we can clear out that queue.
-   
-   * chore: update cargo-dist config to match action bumps
-   
-   I completely missed that the release workflow was generated by cargo-dist. We need to update the SHAs in dist-workspace.toml too, otherwise the next dist run will just revert everything. This commit syncs them up.
-   
-   * chore: drop third-party release action in favor of native gh CLI
-   
-   Switched the release upload step in the ARM64 workflow to use the native `gh` CLI rather than relying on `softprops/action-gh-release`. Since the runner already has the CLI available and our primary release job uses it, this cuts down on an unnecessary third-party dependency.
 
 ### Commit Details
 
@@ -198,133 +180,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-853154d3789aba6d9264cf058bbdd5b9b43c0127/>
 <csr-id-bd49a2e90487338d61dc8a5f895147485d89f6f7/>
 <csr-id-7a29988cc255c7023494b2ff3d773bb20d84a12c/>
-
-### Chore
-
- - <csr-id-3032429c408d49f1845eb74892624a4f0aac2f48/> bump softprops/action-gh-release from 2.6.1 to 3.0.0
-   Bumps [softprops/action-gh-release](https://github.com/softprops/action-gh-release) from 2.6.1 to 3.0.0.
-   - [Release notes](https://github.com/softprops/action-gh-release/releases)
-   - [Changelog](https://github.com/softprops/action-gh-release/blob/master/CHANGELOG.md)
-   - [Commits](https://github.com/softprops/action-gh-release/compare/153bb8e04406b158c6c84fc1615b65b24149a1fe...b4309332981a82ec1c5618f44dd2e27cc8bfbfda)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: softprops/action-gh-release
-     dependency-version: 3.0.0
-     dependency-type: direct:production
-     update-type: version-update:semver-major
-   ...
- - <csr-id-a2ca52d0e1c35506f17a2bd97da8547029f965f4/> bump actions/upload-artifact from 7.0.0 to 7.0.1
-   Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from 7.0.0 to 7.0.1.
-   - [Release notes](https://github.com/actions/upload-artifact/releases)
-   - [Commits](https://github.com/actions/upload-artifact/compare/bbbca2ddaa5d8feaa63e36b76fdaad77386f024f...043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: actions/upload-artifact
-     dependency-version: 7.0.1
-     dependency-type: direct:production
-     update-type: version-update:semver-patch
-   ...
- - <csr-id-187da08880bfccd95ec1d336e841077c8b678685/> bump softprops/action-gh-release from 2.6.0 to 2.6.1
-   Bumps [softprops/action-gh-release](https://github.com/softprops/action-gh-release) from 2.6.0 to 2.6.1.
-   - [Release notes](https://github.com/softprops/action-gh-release/releases)
-   - [Changelog](https://github.com/softprops/action-gh-release/blob/master/CHANGELOG.md)
-   - [Commits](https://github.com/softprops/action-gh-release/compare/26e8ad27a09a225049a7075d7ec1caa2df6ff332...153bb8e04406b158c6c84fc1615b65b24149a1fe)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: softprops/action-gh-release
-     dependency-version: 2.6.1
-     dependency-type: direct:production
-     update-type: version-update:semver-patch
-   ...
- - <csr-id-9d3010cacceabd79f4737a5edba0ee77df071312/> bump github/codeql-action from 3 to 4
-   Bumps [github/codeql-action](https://github.com/github/codeql-action) from 3 to 4.
-   - [Release notes](https://github.com/github/codeql-action/releases)
-   - [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)
-   - [Commits](https://github.com/github/codeql-action/compare/v3...v4)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: github/codeql-action
-     dependency-version: '4'
-     dependency-type: direct:production
-     update-type: version-update:semver-major
-   ...
- - <csr-id-18d5cd21162dd980a5db104f2cfa69c672b6765f/> remove CodeQL workflow for Rust analysis
- - <csr-id-051fe87727d68817a0f2764cd50c0cc0306b3329/> fold all-decoders into default feature set
-   * chore: fold all-decoders into default and retire build recipes
-   
-   Move rodio/64bit, rodio/recording, rodio/wav_output, and rodio/experimental
-   into the default feature set. Retain all-decoders as an empty alias for
-   backwards compatibility.
-   
-   Remove the all-decoders Justfile recipes (build-all, build-release-all,
-   install-all-nx, install-all-win) and update README to reflect that all
-   formats are now available out of the box.
-   
-   * docs: clarify cargo install supports --features without source build
- - <csr-id-568ce4cd2641e2ef136abc23a8b103bbf746d803/> bump lofty from 0.23.2 to 0.23.3
-   * chore: bump lofty from 0.23.2 to 0.23.3
-   
-   Bumps [lofty](https://github.com/Serial-ATA/lofty-rs) from 0.23.2 to 0.23.3.
-   - [Release notes](https://github.com/Serial-ATA/lofty-rs/releases)
-   - [Changelog](https://github.com/Serial-ATA/lofty-rs/blob/main/CHANGELOG.md)
-   - [Commits](https://github.com/Serial-ATA/lofty-rs/compare/0.23.2...0.23.3)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: lofty
-     dependency-version: 0.23.3
-     dependency-type: direct:production
-     update-type: version-update:semver-patch
-   ...
- - <csr-id-b8f00a103722ceb5cb5efd078df77cbc4f547086/> bump actions/download-artifact from 8.0.0 to 8.0.1
-   Bumps [actions/download-artifact](https://github.com/actions/download-artifact) from 8.0.0 to 8.0.1.
-   - [Release notes](https://github.com/actions/download-artifact/releases)
-   - [Commits](https://github.com/actions/download-artifact/compare/70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3...3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: actions/download-artifact
-     dependency-version: 8.0.1
-     dependency-type: direct:production
-     update-type: version-update:semver-patch
-   ...
- - <csr-id-8745780de8137a8fbd2a05f047d4571d5cd6e30b/> bump softprops/action-gh-release from 2.5.0 to 2.6.0
-   Bumps [softprops/action-gh-release](https://github.com/softprops/action-gh-release) from 2.5.0 to 2.6.0.
-   - [Release notes](https://github.com/softprops/action-gh-release/releases)
-   - [Changelog](https://github.com/softprops/action-gh-release/blob/master/CHANGELOG.md)
-   - [Commits](https://github.com/softprops/action-gh-release/compare/a06a81a03ee405af7f2048a818ed3f03bbf83c7b...26e8ad27a09a225049a7075d7ec1caa2df6ff332)
-   
-   ---
-   updated-dependencies:
-   - dependency-name: softprops/action-gh-release
-     dependency-version: 2.6.0
-     dependency-type: direct:production
-     update-type: version-update:semver-minor
-   ...
- - <csr-id-6964f18835a5f532d2f65ca4510f6b637d8563bf/> migrate to Dependabot and secure release workflow
-   * chore: migrate to Dependabot and fix release security - Remove custom workflow, add pr-run-mode=skip, simplify CONTRIBUTORS.md
-   
-   * chore: add GitHub Actions ecosystem to Dependabot config
- - <csr-id-d448783bd8166c11c09218bf188239aa05cfd0b4/> pin dist action SHAs in dist-workspace.toml
- - <csr-id-87324c1ca5523c3caae9ec143111c631a8cf25b4/> reduce release wait timeout from 30m to 15m
-   Increase poll interval from 5s to 10s and reduce iterations from
-   360 to 90, halving unnecessary API calls while still providing
-   sufficient time for the main dist release to complete.
- - <csr-id-2076bf2c8486ee0512ccdf52aab5511d20444ce5/> pin action SHAs and enable artifact attestations
-   Pin all GitHub Actions in release.yml and release-arm64.yml to
-   specific commit SHAs to prevent supply-chain attacks via tag mutation.
-   Enable github-attestations in dist-workspace.toml to cryptographically
-   bind release artifacts to their workflow run.
- - <csr-id-ccd7677f11e2c3e3b748b7e50eb8c98c6ea775fb/> update actions/checkout and action-gh-release versions in workflows
- - <csr-id-1999f45c9b840472674f6032b79fef0fd11c9ad6/> bump dependencies to 0.2.2 and update contributors
-
-### Chore
-
- - <csr-id-7a29988cc255c7023494b2ff3d773bb20d84a12c/> update cargo-dist workflow and configuration
 
 ### Documentation
 
@@ -408,32 +263,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplify `validate-version-format` to single `=~` check
 - Remove unreachable `null` after `return` in `http-get-with-retry`
 
-### Other
-
- - <csr-id-853154d3789aba6d9264cf058bbdd5b9b43c0127/> update version to 0.2.5 in Cargo.toml and Cargo.lock
- - <csr-id-bd49a2e90487338d61dc8a5f895147485d89f6f7/> upgrade dependencies and bump to v0.2.4
-   * build: upgrade dependencies and bump to v0.2.4
-   
-   Upgrade Nushell plugin dependencies from v0.111.0 to v0.112.0 and other system libraries including libc, nix, linux-raw-sys, and lscolors. Refactor the http-get-with-retry function in build.nu to use named flags instead of positional parameters and improve documentation with inline comments.
-   
-   * build: update lofty to 0.24.0 and improve parameter handling
-   
-   Updated lofty dependency from 0.23.3 to 0.24.0 in Cargo.lock.
-   
-   Simplified zip extraction logic in build.nu by removing unnecessary try-catch block and directly checking OS type for Windows-specific expansion.
-   
-   Enhanced check_and_download_prebuilt function to handle all combinations of optional parameters (filename, install-root, checksum-url) instead of only specific combinations, improving flexibility and coverage.
-   
-   * build: update and consolidate Cargo.lock dependencies
-   
-   Update multiple dependencies to their latest versions including cc, coreaudio-rs, doctest-file, pkg-config, rand, rand_core, rustc-hash, and semver. Remove older versions of anstream (0.6.21) and anstyle-parse (0.2.7) that are no longer needed, and consolidate dependency version specifications by removing explicit version pins where they're redundant.
-   
-   * refactor: update build features and improve checksum error handling
-   
-   Replace individual decoder feature flags with simplified generic options (default, lite, all-decoders) for cleaner dependency management. Add detailed error logging and cleanup when checksum download fails, improving robustness of the download_and_install function by handling network failures gracefully.
-   
-   * fix: use http-get-with-retry for fetching checksum in download_and_install
-
 ### Commit Details
 
 <csr-read-only-do-not-edit/>
@@ -513,10 +342,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-id-3809e33e90edbc4ec545e883f7cb7ee86cef16e9/>
 
-### Chore
-
- - <csr-id-3809e33e90edbc4ec545e883f7cb7ee86cef16e9/> update copyright years in LICENSE file
-
 ### New Features
 
  - <csr-id-37c0f45e56c7671fffc094ddbf1bc599c381ea8a/> add Justfile for common tasks and contributor guidance
@@ -569,19 +394,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-31dc072bafe4c903487d5b2f48525910c73e2ddf/> restore pre-build steps for aarch64 target in Cross.toml
  - <csr-id-15a1da7df713bf2f8267a7517f18840f9b74834d/> add pre-build steps for aarch64 target in Cross.tonl
 
-### Refactor
-
- - <csr-id-a2eda3f6b11eaefc0235efc777f8531b34f334c0/> simplify return statements and improve code readability in SoundBeepCmd and generate_wav functions
-
 ### Bug Fixes
 
  - <csr-id-c1628912cd9fee2c43bd546b67afd7b6447a1dcd/> disable build-arm64 job in release workflow
  - <csr-id-54f309d802c84c6f28ff4874a36305ddd64b2091/> update cross installation command to remove version specification
  - <csr-id-8d300a0ebcb3a5b6db189a749cbe3048dbd6106c/> update release workflow to use input tag for packaging and uploading
-
-### Chore
-
- - <csr-id-8f3c1ec53d218acada8a05945d199bab30793c0c/> remove GitHub Actions workflow for tagging on merge
 
 ### Commit Details
 
@@ -618,9 +435,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Bug Fixes
 
  - <csr-id-82d461e5d751b16791c2536d6ffb382dbbcbf872/> adjust release workflow to handle pull requests and improve tag handling
- - <csr-id-c1628912cd9fee2c43bd546b67afd7b6447a1dcd/> disable build-arm64 job in release workflow
- - <csr-id-54f309d802c84c6f28ff4874a36305ddd64b2091/> update cross installation command to remove version specification
- - <csr-id-8d300a0ebcb3a5b6db189a749cbe3048dbd6106c/> update release workflow to use input tag for packaging and uploading
 
 ### Commit Details
 
@@ -638,10 +452,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v0.1.0 (2026-03-03)
 
 <csr-id-43528fc4d388c45aebd99bf178f7251085f1dabe/>
-
-### Chore
-
- - <csr-id-43528fc4d388c45aebd99bf178f7251085f1dabe/> update version to 0.1.0 across all relevant files
 
 ### Commit Details
 
@@ -680,16 +490,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-19ea06eafa3ac3551d23f4a2b53f38c1c767c80d/> downgrade actions versions for compatibility and remove allow-dirty configuration
  - <csr-id-ebfbfddff78e7aa8daa790550a8ae311ebed57b5/> rename plugin references from nu_plugin_audio_hook to nu_plugin_audio
  - <csr-id-ad5d2a0378e47fd3ff47493aff44533816d71fef/> update README to reflect project renaming and improve clarity
-
-### Other
-
- - <csr-id-7f93b35850a9d3ff5a6863e07fba39a1a5513a1d/> add installation hint for plugin usage
- - <csr-id-c1c286ac414b18310e699856e77f9b021989c6bb/> delegate release creation to cargo-dist
-   Removes the explicit "Create GitHub Release" step from the dependency update workflow. Instead, it now pushes a tag which triggers the `cargo-dist` release workflow. This prevents race conditions where two workflows might attempt to create the same release.
- - <csr-id-8301c35d75314be1c3159c436c3c285a81cad1d4/> add arm64 linux cross-compilation job
-   Adds a manual `build-arm64` job to the release workflow. `cargo-dist` does not currently support cross-compiling with system dependencies (ALSA) easily via `cargo-zigbuild` without a custom sysroot. This job uses `cross` to build for `aarch64-unknown-linux-gnu` and uploads the artifact to the release created by `cargo-dist`.
- - <csr-id-4ef01757bb9ede3c70429653c86c76513c894508/> add linux system dependencies
-   Adds `libasound2-dev` and `pkg-config` to the `[dist.dependencies.apt]` section in `dist-workspace.toml`. This ensures that the generated GitHub Actions workflow installs the necessary ALSA development headers before building on Linux runners.
 
 ### Commit Details
 
@@ -732,30 +532,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-18582856c3b49d6c4cbe553959b57768366749f7/>
 <csr-id-d6295e248a1eef439e08d3adeef144e0f20bc480/>
 <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
-
-
-<csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/>
-<csr-id-0f09882df564029b14cdd0893214988c7de2b64d/>
-<csr-id-79412a36e5f154ade35215826dda808c69d2a7fa/>
-<csr-id-4ff643243ff994adaec17710648f9528759f9030/>
-<csr-id-4909d55a260d298f75f9115240d6463e3adba238/>
-<csr-id-18582856c3b49d6c4cbe553959b57768366749f7/>
-<csr-id-d6295e248a1eef439e08d3adeef144e0f20bc480/>
-<csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
-
-### Chore
-
- - <csr-id-37d73dff2fccb240b449a0cb8735e9cc84058dc7/> bump dependencies and update contributors
- - <csr-id-20822a1287b050b8c093daa38a355a03fb1639b1/> bump dependencies and update contributors
- - <csr-id-18bb887257f46def5650105ac9b05d6e5287dfe4/> bump dependencies and update contributors
- - <csr-id-96e495a96b6a7caa7698545d081addc0887db9a5/> modernize dependency-update workflow for Nushell 0.110.0
-   - Fixed regex patterns to prevent Nushell interpolation conflicts with capture groups.
-   - Refactored scripts to use idiomatic `| let` bindings and `reduce` operations.
-   - Expanded dependency discovery to include `dev-dependencies`.
-   - Updated Nushell environment to version 0.110.0.
- - <csr-id-23da40b935119528871e06950ed6e0ea264c6e73/> add AUTHORS file and .mailmap for contributor identity merging
- - <csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/> clean up Cargo.toml — remove lazy_static, bump id3, add crossterm, document features
- - <csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/> migrate constants.rs from lazy_static to std::sync::LazyLock
 
 ### Documentation
 
@@ -807,38 +583,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-5fdd4d3ac0348b285cd723b7c5a1b65dd181c6ee/> update dependencies to latest versions and clean up Cargo.lock
  - <csr-id-274bfc72ca8597f3c80f6ffebf265da9d69d2a5a/> unblock dependency updates and secure workflow
    - Remove explicit interprocess=2.2.1 pin from workflow and Cargo.toml
-
-### Other
-
- - <csr-id-0f09882df564029b14cdd0893214988c7de2b64d/> upgrade checkout action, add fetch-depth, commit message, release guard, and CONTRIBUTORS step
- - <csr-id-79412a36e5f154ade35215826dda808c69d2a7fa/> optimize file loading and improve WAV header generation
-
-### Refactor
-
- - <csr-id-4ff643243ff994adaec17710648f9528759f9030/> replace ID3 frame strings with generic tag keys and split parse_meta
-   - Update `src/constants.rs`: Rename `ID3_HASHMAP` to `TAG_MAP` and map human-readable keys (e.g., "artist") to `lofty::ItemKey` variants, replacing raw ID3 frame strings.
-   - Update `src/audio_meta.rs`:
-     - Split `parse_meta` into `parse_tags` (handles file-based tags via Lofty) and `parse_stream_meta` (handles stream properties via Rodio) to facilitate future streaming support.
-     - Update `SoundMetaSetCmd` to use the new `TAG_MAP`, allowing format-agnostic key usage (e.g., `-k artist` instead of `-k TPE1`).
-   - Update `README.md`: Reflect the change to human-readable metadata keys in usage examples and documentation.
- - <csr-id-4909d55a260d298f75f9115240d6463e3adba238/> improve position tracking and icon consistency
-   - Use icons.music() for header prefix to match render_progress behavior
-     across all icon sets (NerdFont, Unicode, ASCII)
-   
-   - Replace manual wall-clock position tracking with sink.get_pos() to
-     eliminate drift; remove last_tick variable and manual accumulation
-     logic, simplify seek handlers to rely on authoritative sink position
-   
-   - Enhance Windows Unicode detection to support VS Code integrated
-     terminal (TERM_PROGRAM=vscode) and ANSICON in addition to existing
-     WT_SESSION and ConEmuPID checks
- - <csr-id-18582856c3b49d6c4cbe553959b57768366749f7/> update example command to use --raw flag for saving output
- - <csr-id-d6295e248a1eef439e08d3adeef144e0f20bc480/> remove unused `mp3-duration` dependency and improve command descriptions
- - <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/> file loading, add `sound make --data`, and enhance metadata
-   - **Refactor**: Moved file loading and path resolution logic to a new `utils` module to eliminate code duplication between `audio_player` and `audio_meta`.
-   - **Feature**: Added `--data` flag to `sound make`. This allows generating WAV binary data directly to stdout, enabling file saving via pipes (e.g., `sound make ... --data | save output.wav`).
-   - **Enhancement**: Updated `sound meta` to provide additional technical metadata, including file size, file format extension, sample rate, and channel count.
-   - **Cleanup**: Simplified error handling in `sound_make.rs` and removed unused imports across the project.
 
 ### Commit Details
 
@@ -1064,31 +808,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <csr-id-d73259f2473e79653f11890091a7af5b789a1230/>
 <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
 
-
-<csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/>
-<csr-id-e3bad554084913238986cd3621eaeef10ce493ea/>
-<csr-id-1c3a1b798dc0875af9dded383aa143e3566652b2/>
-<csr-id-9a7d7d23d0aeffa11a154887541dcde17344d763/>
-<csr-id-40518de058b294cbb23348d2a09253c340d8716a/>
-<csr-id-6fde8d3a232bff33b8985ccfdf5018834f58d7ac/>
-<csr-id-2f778866fa580367000b7125d66cef4940e4f931/>
-<csr-id-4d02c133629c429b164f97bf846b9f5f12ef8a50/>
-<csr-id-f71f448a430baf778d7a848bf1c1d232490933ee/>
-<csr-id-6a640e8ff5a6fd833937af9628916d487a138062/>
-<csr-id-fc21199bd842e3f74c57568879adc91630162156/>
-<csr-id-332e1232c820905a460f1d8e120bd87988779b09/>
-<csr-id-d73259f2473e79653f11890091a7af5b789a1230/>
-<csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
-
-### Chore
-
- - <csr-id-98ab6aaf1a776a189e318950b9486a7689907155/> update nu version
- - <csr-id-45bd16201b4d9918fe86fa820ea07026f94caab9/> add rust-toolchain configuration file
- - <csr-id-9119a1d3f8c6c64a96aea770b20ed0013a8dafbc/> update nu-plugin and dependencies to version 0.105.1
- - <csr-id-a67c093edcf0e9005f134e2d821a44ff8420f092/> update dependencies and version to 0.104.0
- - <csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/> bump nu-protocol to v0.101.0
- - <csr-id-e2061a932043792ca517478a367f6eb991d56c05/> update packages
-
 ### New Features
 
  - <csr-id-4e21a525c531eff89474b8c56d85ca03d126595e/> player now accept relative paths
@@ -1110,23 +829,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-dd8f83a3f3a2c56fcd8106a8a9705270deccd462/> bump nu-protocol to v0.94
  - <csr-id-1e7f55b1e8c395d4179a4de3afb0e89e7b05b766/> `sound meta -a` error
  - <csr-id-31cf298aaa67c0a0141b063bc1e88dfd0a8a25e7/> bump to nu-protocol v0.93
-
-### Other
-
- - <csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/> rodio to v0.21.1
- - <csr-id-e3bad554084913238986cd3621eaeef10ce493ea/> replaced `unwrap` with error mapping
- - <csr-id-1c3a1b798dc0875af9dded383aa143e3566652b2/> update nu_plugin_audio_hook to version 0.103.0 and bump dependencies
- - <csr-id-9a7d7d23d0aeffa11a154887541dcde17344d763/> update nu_plugin_audio_hook to version 0.102.0 and bump dependencies
- - <csr-id-40518de058b294cbb23348d2a09253c340d8716a/> upgraded to nu-protocol v0.100.0
- - <csr-id-6fde8d3a232bff33b8985ccfdf5018834f58d7ac/> bump nu-protocol to 0.99
- - <csr-id-2f778866fa580367000b7125d66cef4940e4f931/> Bump nu-protocol to v0.98.0
- - <csr-id-4d02c133629c429b164f97bf846b9f5f12ef8a50/> bump rodio version to 0.19.0
- - <csr-id-f71f448a430baf778d7a848bf1c1d232490933ee/> updated packages
- - <csr-id-6a640e8ff5a6fd833937af9628916d487a138062/> lockfile dependencies
- - <csr-id-fc21199bd842e3f74c57568879adc91630162156/> updated nu-protocol to 0.96.0
- - <csr-id-332e1232c820905a460f1d8e120bd87988779b09/> bump nu deps to v0.95
- - <csr-id-d73259f2473e79653f11890091a7af5b789a1230/> bump id3 version
- - <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/> Bump nu-protocol version to 0.93
 
 ### Commit Details
 
@@ -1227,10 +929,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v0.1.1 (2023-11-07)
 
 <csr-id-0e2b1039d49a088f0f9de18585019ff0b642d313/>
-
-### Other
-
- - <csr-id-0e2b1039d49a088f0f9de18585019ff0b642d313/> sound make
 
 ### Commit Details
 
