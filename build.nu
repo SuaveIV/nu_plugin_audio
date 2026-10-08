@@ -1,4 +1,4 @@
-use std log
+use std/log
 
 # Fetch a URL with automatic retries on failure.
 def http-get-with-retry [ # nu-lint-ignore: missing_output_type
