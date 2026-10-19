@@ -37,7 +37,7 @@ version = "0.116.1"
 features = ["plugin"]
 
 [dependencies.rodio]
-version = "0.22.1"
+version = "0.23.0"
 default-features = false
 
 [dependencies.unicode-width]
