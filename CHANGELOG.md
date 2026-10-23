@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.13 (2026-10-23)
+
+### Chore
+
+ - <csr-id-d0b27138ed2488bf8be884fa20ad2fb653e35ade/> combine dependency updates into a single branch
+   - Security: rtrb 0.3.4 -> 0.3.5, fixing RUSTSEC-2026-0274 (double free /
+     use-after-free in `ReadChunk::commit` when a sample's `Drop` panics).
+     rtrb arrives via rodio, and the vulnerable version shipped in v0.2.12.
+   - rodio: 0.22.2 -> 0.23.0, pulling cpal 0.17.3 -> 0.18.2. cpal unified its
+     error types into `CpalError` and dropped `DevicesError`; both
+     `open_default_sink()` call sites only use `err.to_string()`, so no source
+     changes were needed.
+   - lofty: 0.25.1 -> 0.25.4, log: 0.4.34.
+   - Removed the unused `chrono` dependency. It remains in the tree via
+     nu-protocol -> chrono-humanize, so the binary is unchanged.
+   - GitHub Actions: upload-artifact 7.0.2, download-artifact 8.0.2,
+     codeql-action 4.39.0. cargo-dist 0.32.0 -> 0.33.1, release.yml regenerated.
+   - New `Audit` workflow and `just audit` recipe run cargo-audit on push, pull
+     request, and daily. Dependabot now groups patch bumps so this pile-up does
+     not recur.
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **[#91](https://github.com/SuaveIV/nu_plugin_audio/issues/91)**
+    - Combine dependency updates into a single branch ([`d0b2713`](https://github.com/SuaveIV/nu_plugin_audio/commit/d0b27138ed2488bf8be884fa20ad2fb653e35ade))
+</details>
+
 ## v0.2.12 (2026-10-07)
 
 ### Chore
