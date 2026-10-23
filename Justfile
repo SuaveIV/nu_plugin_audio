@@ -20,6 +20,10 @@ check:
 check-toml:
     ^tombi lint Cargo.toml dist-workspace.toml Cross.toml rust-toolchain.toml
 
+# scan Cargo.lock against the RustSec advisory database
+audit:
+    ^cargo audit
+
 # format TOML files with tombi
 format-toml:
     ^tombi format Cargo.toml dist-workspace.toml Cross.toml rust-toolchain.toml

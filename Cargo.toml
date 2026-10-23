@@ -19,15 +19,14 @@ keywords = [
 authors-file = "AUTHORS"
 
 [dependencies]
-chrono = "0.4.45"
 env_logger = "0.11"
-log = "0.4"
+log = "0.4.34"
 
 [dependencies.crossterm]
 version = "0.29"
 
 [dependencies.lofty]
-version = "0.25.1"
+version = "0.25.4"
 
 [dependencies.nu-plugin]
 version = "0.116.1"
@@ -37,7 +36,7 @@ version = "0.116.1"
 features = ["plugin"]
 
 [dependencies.rodio]
-version = "0.22.1"
+version = "0.23.0"
 default-features = false
 
 [dependencies.unicode-width]
