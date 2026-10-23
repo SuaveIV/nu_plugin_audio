@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v0.2.13 (2026-10-23)
 
+<csr-id-d0b27138ed2488bf8be884fa20ad2fb653e35ade/>
+
 ### Chore
 
  - <csr-id-d0b27138ed2488bf8be884fa20ad2fb653e35ade/> combine dependency updates into a single branch
@@ -26,6 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      request, and daily. Dependabot now groups patch bumps so this pile-up does
      not recur.
 
+### Documentation
+
+ - <csr-id-9f0c2fd9c2fd33ad3be4b9519b9ef0d499c78a89/> add v0.2.13 changelog entry and bump nupm version
+   Prepares the 0.2.13 release so `just release` does not stop on the fully-generated-changelog guard.
+   
+   - CHANGELOG: hand-authored v0.2.13 section, leading with RUSTSEC-2026-0274 (rtrb 0.3.4 -> 0.3.5, which also affected v0.2.12).
+   
+   - nupm.nuon: 0.2.12 -> 0.2.13. smart-release only bumps Cargo.toml and the lockfile, so the nupm package version has to be synced by hand.
+
 ### Commit Details
 
 <csr-read-only-do-not-edit/>
@@ -34,9 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  * **[#91](https://github.com/SuaveIV/nu_plugin_audio/issues/91)**
     - Combine dependency updates into a single branch ([`d0b2713`](https://github.com/SuaveIV/nu_plugin_audio/commit/d0b27138ed2488bf8be884fa20ad2fb653e35ade))
+ * **Uncategorized**
+    - Add v0.2.13 changelog entry and bump nupm version ([`9f0c2fd`](https://github.com/SuaveIV/nu_plugin_audio/commit/9f0c2fd9c2fd33ad3be4b9519b9ef0d499c78a89))
 </details>
 
 ## v0.2.12 (2026-10-07)
+
+<csr-id-d73ab2759bfa02b708735220b9e550f7f0febacf/>
+<csr-id-24c2630c1f186b7fdab0e817b7da35396794b8dc/>
 
 ### Chore
 
@@ -61,10 +77,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  * **[#83](https://github.com/SuaveIV/nu_plugin_audio/issues/83)**
     - Update to nushell 0.116.1 ([`d73ab27`](https://github.com/SuaveIV/nu_plugin_audio/commit/d73ab2759bfa02b708735220b9e550f7f0febacf))
  * **Uncategorized**
+    - Release nu_plugin_audio v0.2.12 ([`de9b991`](https://github.com/SuaveIV/nu_plugin_audio/commit/de9b991f3a2e52ebc5fe2a79e0e5bc07185dcc4f))
     - Normalize line endings to LF via .gitattributes ([`24c2630`](https://github.com/SuaveIV/nu_plugin_audio/commit/24c2630c1f186b7fdab0e817b7da35396794b8dc))
 </details>
 
 ## v0.2.11 (2026-08-25)
+
+<csr-id-580864347febbaac151d1a79d8bc494548823f3c/>
+<csr-id-57bdd6c0dbff6fa91d4e75fb29a09e5f8c975e9f/>
+<csr-id-e477f5ad6f708dad6bd85d8166d1c8295f200a82/>
 
 ### Chore
 
@@ -484,28 +505,149 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-id-43528fc4d388c45aebd99bf178f7251085f1dabe/>
 
-### Commit Details
+### Refactor
 
-<csr-read-only-do-not-edit/>
+ - <csr-id-4ff643243ff994adaec17710648f9528759f9030/> replace ID3 frame strings with generic tag keys and split parse_meta
+   - Update `src/constants.rs`: Rename `ID3_HASHMAP` to `TAG_MAP` and map human-readable keys (e.g., "artist") to `lofty::ItemKey` variants, replacing raw ID3 frame strings.
+   - Update `src/audio_meta.rs`:
+     - Split `parse_meta` into `parse_tags` (handles file-based tags via Lofty) and `parse_stream_meta` (handles stream properties via Rodio) to facilitate future streaming support.
+     - Update `SoundMetaSetCmd` to use the new `TAG_MAP`, allowing format-agnostic key usage (e.g., `-k artist` instead of `-k TPE1`).
+   - Update `README.md`: Reflect the change to human-readable metadata keys in usage examples and documentation.
+ - <csr-id-4909d55a260d298f75f9115240d6463e3adba238/> improve position tracking and icon consistency
+   - Use icons.music() for header prefix to match render_progress behavior
+     across all icon sets (NerdFont, Unicode, ASCII)
+   
+   - Replace manual wall-clock position tracking with sink.get_pos() to
+     eliminate drift; remove last_tick variable and manual accumulation
+     logic, simplify seek handlers to rely on authoritative sink position
+   
+   - Enhance Windows Unicode detection to support VS Code integrated
+     terminal (TERM_PROGRAM=vscode) and ANSICON in addition to existing
+     WT_SESSION and ConEmuPID checks
+ - <csr-id-18582856c3b49d6c4cbe553959b57768366749f7/> update example command to use --raw flag for saving output
+ - <csr-id-d6295e248a1eef439e08d3adeef144e0f20bc480/> remove unused `mp3-duration` dependency and improve command descriptions
+ - <csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/> file loading, add `sound make --data`, and enhance metadata
+   - **Refactor**: Moved file loading and path resolution logic to a new `utils` module to eliminate code duplication between `audio_player` and `audio_meta`.
+   - **Feature**: Added `--data` flag to `sound make`. This allows generating WAV binary data directly to stdout, enabling file saving via pipes (e.g., `sound make ... --data | save output.wav`).
+   - **Enhancement**: Updated `sound meta` to provide additional technical metadata, including file size, file format extension, sample rate, and channel count.
+   - **Cleanup**: Simplified error handling in `sound_make.rs` and removed unused imports across the project.
 
-<details><summary>view details</summary>
+### Other
 
- * **Uncategorized**
-    - Merge pull request #6 from SuaveIV/version_decouple ([`22b2edf`](https://github.com/SuaveIV/nu_plugin_audio/commit/22b2edff167b9b35123e43b10158f2f7057f25e8))
-    - Update version to 0.1.0 across all relevant files ([`43528fc`](https://github.com/SuaveIV/nu_plugin_audio/commit/43528fc4d388c45aebd99bf178f7251085f1dabe))
-</details>
+ - <csr-id-7f93b35850a9d3ff5a6863e07fba39a1a5513a1d/> add installation hint for plugin usage
+ - <csr-id-c1c286ac414b18310e699856e77f9b021989c6bb/> delegate release creation to cargo-dist
+   Removes the explicit "Create GitHub Release" step from the dependency update workflow. Instead, it now pushes a tag which triggers the `cargo-dist` release workflow. This prevents race conditions where two workflows might attempt to create the same release.
+ - <csr-id-8301c35d75314be1c3159c436c3c285a81cad1d4/> add arm64 linux cross-compilation job
+   Adds a manual `build-arm64` job to the release workflow. `cargo-dist` does not currently support cross-compiling with system dependencies (ALSA) easily via `cargo-zigbuild` without a custom sysroot. This job uses `cross` to build for `aarch64-unknown-linux-gnu` and uploads the artifact to the release created by `cargo-dist`.
+ - <csr-id-4ef01757bb9ede3c70429653c86c76513c894508/> add linux system dependencies
+   Adds `libasound2-dev` and `pkg-config` to the `[dist.dependencies.apt]` section in `dist-workspace.toml`. This ensures that the generated GitHub Actions workflow installs the necessary ALSA development headers before building on Linux runners.
+ - <csr-id-0f09882df564029b14cdd0893214988c7de2b64d/> upgrade checkout action, add fetch-depth, commit message, release guard, and CONTRIBUTORS step
+ - <csr-id-79412a36e5f154ade35215826dda808c69d2a7fa/> optimize file loading and improve WAV header generation
+ - <csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/> rodio to v0.21.1
+ - <csr-id-e3bad554084913238986cd3621eaeef10ce493ea/> replaced `unwrap` with error mapping
+ - <csr-id-1c3a1b798dc0875af9dded383aa143e3566652b2/> update nu_plugin_audio_hook to version 0.103.0 and bump dependencies
+ - <csr-id-9a7d7d23d0aeffa11a154887541dcde17344d763/> update nu_plugin_audio_hook to version 0.102.0 and bump dependencies
+ - <csr-id-40518de058b294cbb23348d2a09253c340d8716a/> upgraded to nu-protocol v0.100.0
+ - <csr-id-6fde8d3a232bff33b8985ccfdf5018834f58d7ac/> bump nu-protocol to 0.99
+ - <csr-id-2f778866fa580367000b7125d66cef4940e4f931/> Bump nu-protocol to v0.98.0
+ - <csr-id-4d02c133629c429b164f97bf846b9f5f12ef8a50/> bump rodio version to 0.19.0
+ - <csr-id-f71f448a430baf778d7a848bf1c1d232490933ee/> updated packages
+ - <csr-id-6a640e8ff5a6fd833937af9628916d487a138062/> lockfile dependencies
+ - <csr-id-fc21199bd842e3f74c57568879adc91630162156/> updated nu-protocol to 0.96.0
+ - <csr-id-332e1232c820905a460f1d8e120bd87988779b09/> bump nu deps to v0.95
+ - <csr-id-d73259f2473e79653f11890091a7af5b789a1230/> bump id3 version
+ - <csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/> Bump nu-protocol version to 0.93
 
-## v0.111.0-test.1 (2026-03-03)
+### Bug Fixes
 
-<csr-id-7f93b35850a9d3ff5a6863e07fba39a1a5513a1d/>
-<csr-id-c1c286ac414b18310e699856e77f9b021989c6bb/>
-<csr-id-8301c35d75314be1c3159c436c3c285a81cad1d4/>
-<csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
-
-### Documentation
-
- - <csr-id-ad7d2ca9314bc7675f18df2cd75846e0f40410f7/> update installation instructions
-   Rewrites the Installation section in `README.md` to prioritize `nupm` (now using prebuilts) and add instructions for shell installers, `cargo binstall`, and manual downloads. Moves manual compilation to a fallback section.
+ - <csr-id-19ea06eafa3ac3551d23f4a2b53f38c1c767c80d/> downgrade actions versions for compatibility and remove allow-dirty configuration
+ - <csr-id-ebfbfddff78e7aa8daa790550a8ae311ebed57b5/> rename plugin references from nu_plugin_audio_hook to nu_plugin_audio
+ - <csr-id-ad5d2a0378e47fd3ff47493aff44533816d71fef/> update README to reflect project renaming and improve clarity
+ - <csr-id-5fdd4d3ac0348b285cd723b7c5a1b65dd181c6ee/> update dependencies to latest versions and clean up Cargo.lock
+ - <csr-id-274bfc72ca8597f3c80f6ffebf265da9d69d2a5a/> unblock dependency updates and secure workflow
+   - Remove explicit interprocess=2.2.1 pin from workflow and Cargo.toml
+   - Add explicit contents: write permission block
+   - Pin GitHub actions to exact commit SHAs to prevent supply chain attacks
+ - <csr-id-2df0c9230724b0545096bfeb742f0ab68ff7170a/> command string formatting in build.nu
+ - <csr-id-ff24e05e3dd03944d5580e4ffbb7e0a58a38d264/> improve error handling in audio metadata parsing and update dependency version extraction
+ - <csr-id-b24841936746732faf879c5769d841158a3c924c/> add publisher alias in README and improve error handling in audio metadata parsing
+ - <csr-id-ed5f34422c415a3e63d3a1cd054baa382062910b/> correct duration format in README and improve error handling in audio metadata parsing
+ - <csr-id-f30e460c481882501cd64177a800843f4cbd846b/> address review findings across meta, player, constants, and README
+   - README: replace '...' size placeholder in FLAC example with '42.3 MiB'
+   - utils: extract shared pub format_duration (M:SS / H:MM:SS) used by both
+     audio_meta and audio_player, eliminating duplicate implementations
+   - audio_meta: add (Type::Binary, Type::Record) to input_output_types so
+     nushell routes binary pipeline input to the existing unsupported-input guard
+   - audio_meta: thread lofty container-header duration through parse_tags →
+     parse_meta → parse_stream_meta as a fallback; use source.total_duration()
+     .or(lofty_duration) so minimp3 files no longer emit Value::nothing for
+     the duration field when lofty can supply it
+   - audio_player: replace misleading piped example
+     ('sound meta audio.mp3 | sound play audio.mp3') with a correct standalone
+     usage ('sound play audio.mp3'); _input is not consumed by play_audio
+   - audio_player: consolidate two lofty::read_from_path(&path) calls into one
+     tagged_file_res, deriving both (title, artist) and source_duration from it
+   - constants: add 'publisher' alias for ItemKey::Publisher alongside a comment
+     explaining the Vorbis/TXXX 'organization' convention
+ - <csr-id-d72f14dd22def9f359c23635b2aea3187f8e3939/> coerce vec to boxed slice for Type::Record in input_output_types
+   `nu-protocol 0.110.0` expects `Box<[(String, Type)]>` not `Vec` — appending `.into()` to the empty vec literals satisfies the type checker.
+ - <csr-id-b964eb009777bea33a7e5167356cae66f3e61c71/> change cargo build to cargo check in dependency update workflow
+ - <csr-id-2d73711822d1c8ec1c777c6ea527a77bd6d863bf/> sanitize plugin version in dependency update workflow
+ - <csr-id-e085674ee0c3a6c0dbe89f42fca14001fd7000b0/> inline dep bump script and pin interprocess to =2.2.1
+ - <csr-id-624c183913cfe3b8c7bb3c05df3444140bcff7bf/> downgrade interprocess to version 2.2.1
+ - <csr-id-e3d43c8d570c06fc753bb8694bbbf7130f344a8c/> prevent flicker and make header responsive
+ - <csr-id-6f3f4c0d6336fc925bf2a8c4aec7955b1e01bf44/> optimize header rendering and clear progress line to reduce flicker
+ - <csr-id-ab0613dc35334f009e4b257291b5fcaec498d9d7/> improve progress header display and handle truncation
+ - <csr-id-a63143ae4de82100a4584ad42bbd0f2cc09cc315/> stop progress bar from flickering
+   Interleaved write!/queue! calls were letting the OS render partial frames
+   before the flush. The whole frame is now buffered and sent in one write_all.
+   
+   Also fixed the artist/title header, which was printed once and abandoned —
+   cursor movement around the progress line below it caused visual noise. Both
+   lines are now redrawn together on every frame using a first_render flag to
+   reserve the two-line region on the initial draw.
+ - <csr-id-9a064c2d9b7d056c1ac8581214775f8edc5b7501/> harden CI workflow, fix bar overflow, update unicode-width
+   CI / security:
+   - Pin bump-script URL to full 40-char SHA (2b1f155…270f8)
+   - Pin softprops/action-gh-release to v2.5.0 SHA (a06a81a)
+   - Pin EndBug/add-and-commit to v9 SHA (a94899b)
+   - Remove -e from git shortlog to stop leaking contributor emails
+ - <csr-id-da1fff2ca4e2fde047be672b6efe9438d9afb3bd/> remove dead code, guard codec overrun, skip narrow terminals
+   - Remove unused last_position variable (declared and written but never read)
+   - Cap sink.get_pos() with .min(total) so codecs that briefly report a
+     position beyond the stream duration don't prematurely trigger the
+     end-of-track break or clamp the bar to 100%
+   - Add MIN_RENDER_WIDTH (40) guard at the top of render_progress to silently
+     skip rendering on very narrow terminals instead of printing wrapped garbage
+ - <csr-id-741a149f8126fe8a64438a8977bc977d7a1072a1/> update playback command description to include 5s seeking functionality
+ - <csr-id-fd81afde55c82f5904372ddfa902a585092b0d6d/> update Nushell setup action to version 3
+ - <csr-id-07f095a291d49678aa45a493eeb6cc5ebe0faa5b/> enhance character width handling and improve progress display logic
+ - <csr-id-43a3e1a92791712f725f32f25e182c9a77d5c4e7/> improve playback logic, display rendering, and workflow stability
+ - <csr-id-e3a9c860bcfb1116a310ef6bef275157d4da91cb/> change env_logger initialization to try_init for safer logging setup
+ - <csr-id-375bc65f9d47978161a0f978216a0247817a3e39/> improve error handling for negative and invalid duration values in load_values function
+ - <csr-id-8bde4e2eda666731aad62d58229fb087afce5ddd/> correct key name for recording year in ID3_HASHMAP
+ - <csr-id-df6d0b22d81511f38eb098350ce62ae072f5b988/> update audio file references in metadata commands and examples
+ - <csr-id-71d0a4c79f65594f8d52a2187d92b49e039e5f7d/> Windows file locking, improve WAV safety, and enhance error handling
+   - Fix Windows file locking by dropping read handles before writing tags.
+   - Add overflow protection to WAV header generation.
+   - Handle missing duration gracefully and improve error messages.
+   - Add `log` dependency.
+ - <csr-id-c8f00e68cc05a38542eac351c7f2a4223a57720b/> remove print in stderr for `sound play`
+ - <csr-id-3aee04039914ea0dad5a8d9feffead93d1b4fff4/> disable OutputStream log on drop
+ - <csr-id-416655971a94f73b189b3a683303c602d41d3e14/> quote paths so they can contain spaces
+ - <csr-id-fc224800bf1869dcc4d1817038db5acd858f1a18/> swapped `unwrap` with error mapping
+ - <csr-id-feb493dd2dd15f124930f1cf83c6dc4cad565709/> impossible to interrupt player task
+ - <csr-id-009341711ec629392875f9c8a0cbbb91edb237a9/> update examples method signature to include lifetime parameter
+ - <csr-id-09a548fca38fd7a8ea3fb90502df3f4d051e60b4/> remove unnecessary echo statement from build.nu
+ - <csr-id-8c9290301e672bddef77f6c92c5929144c2f7c5e/> nupm package version
+ - <csr-id-c88864f5f37cc3c999e0e88a1c60c8131fbfcbb3/> permission issue on apt
+ - <csr-id-22828558d23d47e39777760a42b5d5cd64f84fb6/> changed `register` to `plugin add` in README
+ - <csr-id-0069342830baefafbeba42e04eaae55857c5b6fd/> added alsa sys package to workflow
+ - <csr-id-ffc95ad22865e1326a927eec085de5d0f2c94a17/> workflow trigger
+ - <csr-id-f7e4f203e16a9106856499c05b524404a2997df9/> nupm build script feature list
+ - <csr-id-dd8f83a3f3a2c56fcd8106a8a9705270deccd462/> bump nu-protocol to v0.94
+ - <csr-id-1e7f55b1e8c395d4179a4de3afb0e89e7b05b766/> `sound meta -a` error
+ - <csr-id-31cf298aaa67c0a0141b063bc1e88dfd0a8a25e7/> bump to nu-protocol v0.93
 
 ### New Features
 
@@ -515,12 +657,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-c2ca3dea85ecabc97d991b42e421bca0ac82edec/> add ARM64 release workflow for cross-compilation and packaging
  - <csr-id-d802b04fa7ea336b75ad3395c1728600b56bba93/> support prebuilt binary installation
    Updates `build.nu` to detect the current platform and attempt to download a prebuilt binary from GitHub Releases. It falls back to compiling from source if the binary is unavailable or the download fails. This significantly speeds up installation for users on supported platforms.
+ - <csr-id-9e71bea71ac2fb76fa3a569b0dd292ed13a80aea/> expand TAG_MAP, expose FileProperties, artwork, and fix duration
+   - TAG_MAP: HashMap → BTreeMap; add 22 new keys (comment, lyrics, label,
+     producer, remixer, replaygain_*, compilation, barcode, script, etc.)
+   - sound meta: expose bitrate, audio_bitrate, bit_depth from FileProperties;
+     expose embedded artwork as a list of {pic_type, mime_type, size} records;
+     key lookup is now case-insensitive; insert_text failure returns LabeledError
+   - Duration: formatted as H:MM:SS string in both sound meta output and the
+     progress bar; audio_player falls back to lofty FileProperties duration so
+     minimp3 files no longer need a manual -d flag
+   - README: updated example output, artwork/ReplayGain examples, full key
+     reference table, removed stale $in.duration pipeline example
+ - <csr-id-e84d51fc0df6fbb3a5c2e5b792e000315ce8b29c/> add interactive audio player with rich progress display
+   - Add live progress bar to `sound play` with elapsed/total time tracking.
+   - Add interactive keyboard controls for files longer than 1 minute:
+     - Space to toggle play/pause
+     - Left/Right (or h/l) to seek
+     - Up/Down (or k/j) to adjust volume
+     - 'm' to toggle mute
+     - 'q' or Esc to quit
+   - Add visual volume bar and dynamic terminal width scaling.
+   - Add Nerd Font support via `--nerd-fonts` flag or `NERD_FONTS` env var, featuring smooth sub-character rendering.
+   - Add `--no-progress` flag to suppress output for background use.
+   - Fix busy-wait loop by replacing it with a sleep-based tick.
+ - <csr-id-bd0168c63ca7daa4dd5b236eaafe235d79f10a20/> Add volume control to sound play and make
+   - The '--amplify' flag is now available for 'sound play' to adjust playback volume. I also updated 'sound make' to clarify that its existing amplify flag can be used to make sounds quieter by using values below 1.0.
+ - <csr-id-4e21a525c531eff89474b8c56d85ca03d126595e/> player now accept relative paths
+ - <csr-id-21adaa164ace69d9cb1f579476e189566d53795d/> add GitHub Actions workflow for automatic dependency updates
+ - <csr-id-6831b19bf4636434573f44ebcbe90e2c4ad241b8/> auto publish script
 
-### Bug Fixes
+### Documentation
 
- - <csr-id-19ea06eafa3ac3551d23f4a2b53f38c1c767c80d/> downgrade actions versions for compatibility and remove allow-dirty configuration
- - <csr-id-ebfbfddff78e7aa8daa790550a8ae311ebed57b5/> rename plugin references from nu_plugin_audio_hook to nu_plugin_audio
- - <csr-id-ad5d2a0378e47fd3ff47493aff44533816d71fef/> update README to reflect project renaming and improve clarity
+ - <csr-id-ad7d2ca9314bc7675f18df2cd75846e0f40410f7/> update installation instructions
+   Rewrites the Installation section in `README.md` to prioritize `nupm` (now using prebuilts) and add instructions for shell installers, `cargo binstall`, and manual downloads. Moves manual compilation to a fallback section.
+ - <csr-id-3d0403fcaf52609aca77395543482cf6cace7a41/> enhance documentation for audio metadata commands and constants
+ - <csr-id-b45e901d21f3bf7b4ce3507cf6d173398aa7c189/> update README with playback display, controls, and format support table
+ - <csr-id-a99cff6faa92a00a8dc1162ca75d57a1128c794f/> update README with new features and fixes
+   - Add `sound make --data` example for saving generated tones to WAV files
+   - Add `sound play --amplify` examples for volume control
+   - Update `sound meta` example output to include size, format, sample_rate, and channels
+   - Add `--locked` flag to all cargo install/build commands due to upstream dependency issue
+   - Fix markdownlint warnings (MD040, MD036, MD012)
+
+### Chore
+
+ - <csr-id-37d73dff2fccb240b449a0cb8735e9cc84058dc7/> bump dependencies and update contributors
+ - <csr-id-20822a1287b050b8c093daa38a355a03fb1639b1/> bump dependencies and update contributors
+ - <csr-id-18bb887257f46def5650105ac9b05d6e5287dfe4/> bump dependencies and update contributors
+ - <csr-id-96e495a96b6a7caa7698545d081addc0887db9a5/> modernize dependency-update workflow for Nushell 0.110.0
+   - Fixed regex patterns to prevent Nushell interpolation conflicts with capture groups.
+   - Refactored scripts to use idiomatic `| let` bindings and `reduce` operations.
+   - Expanded dependency discovery to include `dev-dependencies`.
+   - Updated Nushell environment to version 0.110.0.
+ - <csr-id-23da40b935119528871e06950ed6e0ea264c6e73/> add AUTHORS file and .mailmap for contributor identity merging
+ - <csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/> clean up Cargo.toml — remove lazy_static, bump id3, add crossterm, document features
+ - <csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/> migrate constants.rs from lazy_static to std::sync::LazyLock
+ - <csr-id-98ab6aaf1a776a189e318950b9486a7689907155/> update nu version
+ - <csr-id-45bd16201b4d9918fe86fa820ea07026f94caab9/> add rust-toolchain configuration file
+ - <csr-id-9119a1d3f8c6c64a96aea770b20ed0013a8dafbc/> update nu-plugin and dependencies to version 0.105.1
+ - <csr-id-a67c093edcf0e9005f134e2d821a44ff8420f092/> update dependencies and version to 0.104.0
+ - <csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/> bump nu-protocol to v0.101.0
+ - <csr-id-e2061a932043792ca517478a367f6eb991d56c05/> update packages
 
 ### Commit Details
 
@@ -528,7 +725,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <details><summary>view details</summary>
 
+ * **[#6](https://github.com/SuaveIV/nu_plugin_audio/issues/6)**
+    - Player now accept relative paths ([`4e21a52`](https://github.com/SuaveIV/nu_plugin_audio/commit/4e21a525c531eff89474b8c56d85ca03d126595e))
+ * **[#7](https://github.com/SuaveIV/nu_plugin_audio/issues/7)**
+    - Impossible to interrupt player task ([`feb493d`](https://github.com/SuaveIV/nu_plugin_audio/commit/feb493dd2dd15f124930f1cf83c6dc4cad565709))
  * **Uncategorized**
+    - Merge pull request #6 from SuaveIV/version_decouple ([`22b2edf`](https://github.com/SuaveIV/nu_plugin_audio/commit/22b2edff167b9b35123e43b10158f2f7057f25e8))
+    - Update version to 0.1.0 across all relevant files ([`43528fc`](https://github.com/SuaveIV/nu_plugin_audio/commit/43528fc4d388c45aebd99bf178f7251085f1dabe))
     - Merge pull request #5 from SuaveIV/binary_dist ([`1ce8350`](https://github.com/SuaveIV/nu_plugin_audio/commit/1ce8350d6293c6b90707692d66774425ea640f36))
     - Enhance download_and_install function with checksum verification and GPG signature support ([`f40c635`](https://github.com/SuaveIV/nu_plugin_audio/commit/f40c6355d6b96ff01b7eaff18e1e60cbd391d6a0))
     - Downgrade actions versions for compatibility and remove allow-dirty configuration ([`19ea06e`](https://github.com/SuaveIV/nu_plugin_audio/commit/19ea06eafa3ac3551d23f4a2b53f38c1c767c80d))
@@ -545,83 +748,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Rename plugin references from nu_plugin_audio_hook to nu_plugin_audio ([`ebfbfdd`](https://github.com/SuaveIV/nu_plugin_audio/commit/ebfbfddff78e7aa8daa790550a8ae311ebed57b5))
     - Update README.md ([`08801a7`](https://github.com/SuaveIV/nu_plugin_audio/commit/08801a74152b97bd51e14bdf5650ea7fef3efc66))
     - Update README to reflect project renaming and improve clarity ([`ad5d2a0`](https://github.com/SuaveIV/nu_plugin_audio/commit/ad5d2a0378e47fd3ff47493aff44533816d71fef))
-</details>
-
-## v0.111.0 (2026-03-03)
-
-<csr-id-37d73dff2fccb240b449a0cb8735e9cc84058dc7/>
-<csr-id-20822a1287b050b8c093daa38a355a03fb1639b1/>
-<csr-id-18bb887257f46def5650105ac9b05d6e5287dfe4/>
-<csr-id-96e495a96b6a7caa7698545d081addc0887db9a5/>
-<csr-id-23da40b935119528871e06950ed6e0ea264c6e73/>
-<csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/>
-<csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/>
-<csr-id-0f09882df564029b14cdd0893214988c7de2b64d/>
-<csr-id-79412a36e5f154ade35215826dda808c69d2a7fa/>
-<csr-id-4ff643243ff994adaec17710648f9528759f9030/>
-<csr-id-4909d55a260d298f75f9115240d6463e3adba238/>
-<csr-id-18582856c3b49d6c4cbe553959b57768366749f7/>
-<csr-id-d6295e248a1eef439e08d3adeef144e0f20bc480/>
-<csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
-
-### Documentation
-
- - <csr-id-3d0403fcaf52609aca77395543482cf6cace7a41/> enhance documentation for audio metadata commands and constants
- - <csr-id-b45e901d21f3bf7b4ce3507cf6d173398aa7c189/> update README with playback display, controls, and format support table
- - <csr-id-a99cff6faa92a00a8dc1162ca75d57a1128c794f/> update README with new features and fixes
-   - Add `sound make --data` example for saving generated tones to WAV files
-
-### New Features
-
-<csr-id-e84d51fc0df6fbb3a5c2e5b792e000315ce8b29c/>
-<csr-id-bd0168c63ca7daa4dd5b236eaafe235d79f10a20/>
-
- - <csr-id-9e71bea71ac2fb76fa3a569b0dd292ed13a80aea/> expand TAG_MAP, expose FileProperties, artwork, and fix duration
-   - TAG_MAP: HashMap → BTreeMap; add 22 new keys (comment, lyrics, label,
-   producer, remixer, replaygain_*, compilation, barcode, script, etc.)
-
-### Bug Fixes
-
-<csr-id-2df0c9230724b0545096bfeb742f0ab68ff7170a/>
-<csr-id-ff24e05e3dd03944d5580e4ffbb7e0a58a38d264/>
-<csr-id-b24841936746732faf879c5769d841158a3c924c/>
-<csr-id-ed5f34422c415a3e63d3a1cd054baa382062910b/>
-<csr-id-f30e460c481882501cd64177a800843f4cbd846b/>
-<csr-id-d72f14dd22def9f359c23635b2aea3187f8e3939/>
-<csr-id-b964eb009777bea33a7e5167356cae66f3e61c71/>
-<csr-id-2d73711822d1c8ec1c777c6ea527a77bd6d863bf/>
-<csr-id-e085674ee0c3a6c0dbe89f42fca14001fd7000b0/>
-<csr-id-624c183913cfe3b8c7bb3c05df3444140bcff7bf/>
-<csr-id-e3d43c8d570c06fc753bb8694bbbf7130f344a8c/>
-<csr-id-6f3f4c0d6336fc925bf2a8c4aec7955b1e01bf44/>
-<csr-id-ab0613dc35334f009e4b257291b5fcaec498d9d7/>
-<csr-id-a63143ae4de82100a4584ad42bbd0f2cc09cc315/>
-<csr-id-9a064c2d9b7d056c1ac8581214775f8edc5b7501/>
-<csr-id-da1fff2ca4e2fde047be672b6efe9438d9afb3bd/>
-<csr-id-741a149f8126fe8a64438a8977bc977d7a1072a1/>
-<csr-id-fd81afde55c82f5904372ddfa902a585092b0d6d/>
-<csr-id-07f095a291d49678aa45a493eeb6cc5ebe0faa5b/>
-<csr-id-43a3e1a92791712f725f32f25e182c9a77d5c4e7/>
-<csr-id-e3a9c860bcfb1116a310ef6bef275157d4da91cb/>
-<csr-id-375bc65f9d47978161a0f978216a0247817a3e39/>
-<csr-id-8bde4e2eda666731aad62d58229fb087afce5ddd/>
-<csr-id-df6d0b22d81511f38eb098350ce62ae072f5b988/>
-<csr-id-71d0a4c79f65594f8d52a2187d92b49e039e5f7d/>
-<csr-id-c8f00e68cc05a38542eac351c7f2a4223a57720b/>
-<csr-id-3aee04039914ea0dad5a8d9feffead93d1b4fff4/>
-<csr-id-416655971a94f73b189b3a683303c602d41d3e14/>
-
- - <csr-id-5fdd4d3ac0348b285cd723b7c5a1b65dd181c6ee/> update dependencies to latest versions and clean up Cargo.lock
- - <csr-id-274bfc72ca8597f3c80f6ffebf265da9d69d2a5a/> unblock dependency updates and secure workflow
-   - Remove explicit interprocess=2.2.1 pin from workflow and Cargo.toml
-
-### Commit Details
-
-<csr-read-only-do-not-edit/>
-
-<details><summary>view details</summary>
-
- * **Uncategorized**
     - Bump dependencies and update contributors ([`37d73df`](https://github.com/SuaveIV/nu_plugin_audio/commit/37d73dff2fccb240b449a0cb8735e9cc84058dc7))
     - Update dependencies to latest versions and clean up Cargo.lock ([`5fdd4d3`](https://github.com/SuaveIV/nu_plugin_audio/commit/5fdd4d3ac0348b285cd723b7c5a1b65dd181c6ee))
     - Unblock dependency updates and secure workflow ([`274bfc7`](https://github.com/SuaveIV/nu_plugin_audio/commit/274bfc72ca8597f3c80f6ffebf265da9d69d2a5a))
@@ -716,29 +842,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Merge pull request #10 from v1olen/fix/quote-paths ([`75b1792`](https://github.com/SuaveIV/nu_plugin_audio/commit/75b17923f85dc9b4ef020e7b365c173837fc06b1))
     - Quote paths so they can contain spaces ([`4166559`](https://github.com/SuaveIV/nu_plugin_audio/commit/416655971a94f73b189b3a683303c602d41d3e14))
     - Commit from GitHub Actions (Update dependencies) ([`3460019`](https://github.com/SuaveIV/nu_plugin_audio/commit/3460019b15d32acd84c2c3efb9a71d6463fb5dfd))
-</details>
-
-## v0.109.1 (2025-12-03)
-
-### Commit Details
-
-<csr-read-only-do-not-edit/>
-
-<details><summary>view details</summary>
-
- * **Uncategorized**
     - Commit from GitHub Actions (Update dependencies) ([`b7ae7ed`](https://github.com/SuaveIV/nu_plugin_audio/commit/b7ae7ed39afdadc13b9df0bac00759c9474e7b7d))
-</details>
-
-## v0.109.0 (2025-11-30)
-
-### Commit Details
-
-<csr-read-only-do-not-edit/>
-
-<details><summary>view details</summary>
-
- * **Uncategorized**
     - Commit from GitHub Actions (Update dependencies) ([`0d5baa5`](https://github.com/SuaveIV/nu_plugin_audio/commit/0d5baa50a929eaaef991e97f384befad278d66a1))
     - Set Nushell version to 0.108.0 ([`1eaab07`](https://github.com/SuaveIV/nu_plugin_audio/commit/1eaab07d82ca349e4f236d35a818184a7b06648f))
     - Commit from GitHub Actions (Update dependencies) ([`2bd6c37`](https://github.com/SuaveIV/nu_plugin_audio/commit/2bd6c372638f159b0f42dd12290fbbb2f667b9df))
@@ -758,17 +862,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Commit from GitHub Actions (Update dependencies) ([`6795cec`](https://github.com/SuaveIV/nu_plugin_audio/commit/6795cec582ead0cd82245e0db25e540466d86909))
     - Commit from GitHub Actions (Update dependencies) ([`8922473`](https://github.com/SuaveIV/nu_plugin_audio/commit/89224734d676963ce978f46dcf03b4b10962bb8e))
     - Commit from GitHub Actions (Update dependencies) ([`4b89335`](https://github.com/SuaveIV/nu_plugin_audio/commit/4b89335e06e8d69b8f1a3b034297a57b27bc7e8a))
-</details>
-
-## v0.108.0 (2025-10-17)
-
-### Commit Details
-
-<csr-read-only-do-not-edit/>
-
-<details><summary>view details</summary>
-
- * **Uncategorized**
     - Commit from GitHub Actions (Update dependencies) ([`db29987`](https://github.com/SuaveIV/nu_plugin_audio/commit/db29987f07d6916b7588f31236197f8602304371))
     - Commit from GitHub Actions (Update dependencies) ([`416270e`](https://github.com/SuaveIV/nu_plugin_audio/commit/416270e9d2972ea1a0d34f382f4aa43572b47c54))
     - Commit from GitHub Actions (Update dependencies) ([`5151cb8`](https://github.com/SuaveIV/nu_plugin_audio/commit/5151cb8de248e7e40d86323afd1cc8fcabebf8f5))
@@ -790,17 +883,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Commit from GitHub Actions (Update dependencies) ([`62f630f`](https://github.com/SuaveIV/nu_plugin_audio/commit/62f630feaefb7fc373c356518e1851ed36f86967))
     - Commit from GitHub Actions (Update dependencies) ([`96cc855`](https://github.com/SuaveIV/nu_plugin_audio/commit/96cc85584338220f39299bd637cc33bbfe2f214d))
     - Commit from GitHub Actions (Update dependencies) ([`b544045`](https://github.com/SuaveIV/nu_plugin_audio/commit/b5440450eb093ea976729c52cdaff817589ba616))
-</details>
-
-## v0.107.0 (2025-09-03)
-
-### Commit Details
-
-<csr-read-only-do-not-edit/>
-
-<details><summary>view details</summary>
-
- * **Uncategorized**
     - Commit from GitHub Actions (Update dependencies) ([`900fe42`](https://github.com/SuaveIV/nu_plugin_audio/commit/900fe42fb520826098d68514bf006bb1bf8bafd4))
     - Commit from GitHub Actions (Update dependencies) ([`00a671a`](https://github.com/SuaveIV/nu_plugin_audio/commit/00a671a0beb255e2f65b138917e9e65c3ad2e52e))
     - Commit from GitHub Actions (Update dependencies) ([`34c8d58`](https://github.com/SuaveIV/nu_plugin_audio/commit/34c8d58bd709e3d45a03a5e9deed6d8dbba7f0bf))
@@ -814,64 +896,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Commit from GitHub Actions (Update dependencies) ([`66b6e16`](https://github.com/SuaveIV/nu_plugin_audio/commit/66b6e163ab15ce0238df307ba080e95ff66a0d8b))
     - Commit from GitHub Actions (Update dependencies) ([`003a91a`](https://github.com/SuaveIV/nu_plugin_audio/commit/003a91a1ea84ed4cfa0d6877ffadd6da8981be91))
     - Commit from GitHub Actions (Update dependencies) ([`9994af2`](https://github.com/SuaveIV/nu_plugin_audio/commit/9994af283126160c5d051c2743c8f092b6d56bb9))
-</details>
-
-## v0.106.1 (2025-08-03)
-
-<csr-id-98ab6aaf1a776a189e318950b9486a7689907155/>
-<csr-id-45bd16201b4d9918fe86fa820ea07026f94caab9/>
-<csr-id-9119a1d3f8c6c64a96aea770b20ed0013a8dafbc/>
-<csr-id-a67c093edcf0e9005f134e2d821a44ff8420f092/>
-<csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/>
-<csr-id-e2061a932043792ca517478a367f6eb991d56c05/>
-<csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/>
-<csr-id-e3bad554084913238986cd3621eaeef10ce493ea/>
-<csr-id-1c3a1b798dc0875af9dded383aa143e3566652b2/>
-<csr-id-9a7d7d23d0aeffa11a154887541dcde17344d763/>
-<csr-id-40518de058b294cbb23348d2a09253c340d8716a/>
-<csr-id-6fde8d3a232bff33b8985ccfdf5018834f58d7ac/>
-<csr-id-2f778866fa580367000b7125d66cef4940e4f931/>
-<csr-id-4d02c133629c429b164f97bf846b9f5f12ef8a50/>
-<csr-id-f71f448a430baf778d7a848bf1c1d232490933ee/>
-<csr-id-6a640e8ff5a6fd833937af9628916d487a138062/>
-<csr-id-fc21199bd842e3f74c57568879adc91630162156/>
-<csr-id-332e1232c820905a460f1d8e120bd87988779b09/>
-<csr-id-d73259f2473e79653f11890091a7af5b789a1230/>
-<csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
-
-### New Features
-
- - <csr-id-4e21a525c531eff89474b8c56d85ca03d126595e/> player now accept relative paths
- - <csr-id-21adaa164ace69d9cb1f579476e189566d53795d/> add GitHub Actions workflow for automatic dependency updates
- - <csr-id-6831b19bf4636434573f44ebcbe90e2c4ad241b8/> auto publish script
-
-### Bug Fixes
-
- - <csr-id-fc224800bf1869dcc4d1817038db5acd858f1a18/> swapped `unwrap` with error mapping
- - <csr-id-feb493dd2dd15f124930f1cf83c6dc4cad565709/> impossible to interrupt player task
- - <csr-id-009341711ec629392875f9c8a0cbbb91edb237a9/> update examples method signature to include lifetime parameter
- - <csr-id-09a548fca38fd7a8ea3fb90502df3f4d051e60b4/> remove unnecessary echo statement from build.nu
- - <csr-id-8c9290301e672bddef77f6c92c5929144c2f7c5e/> nupm package version
- - <csr-id-c88864f5f37cc3c999e0e88a1c60c8131fbfcbb3/> permission issue on apt
- - <csr-id-22828558d23d47e39777760a42b5d5cd64f84fb6/> changed `register` to `plugin add` in README
- - <csr-id-0069342830baefafbeba42e04eaae55857c5b6fd/> added alsa sys package to workflow
- - <csr-id-ffc95ad22865e1326a927eec085de5d0f2c94a17/> workflow trigger
- - <csr-id-f7e4f203e16a9106856499c05b524404a2997df9/> nupm build script feature list
- - <csr-id-dd8f83a3f3a2c56fcd8106a8a9705270deccd462/> bump nu-protocol to v0.94
- - <csr-id-1e7f55b1e8c395d4179a4de3afb0e89e7b05b766/> `sound meta -a` error
- - <csr-id-31cf298aaa67c0a0141b063bc1e88dfd0a8a25e7/> bump to nu-protocol v0.93
-
-### Commit Details
-
-<csr-read-only-do-not-edit/>
-
-<details><summary>view details</summary>
-
- * **[#6](https://github.com/SuaveIV/nu_plugin_audio/issues/6)**
-    - Player now accept relative paths ([`4e21a52`](https://github.com/SuaveIV/nu_plugin_audio/commit/4e21a525c531eff89474b8c56d85ca03d126595e))
- * **[#7](https://github.com/SuaveIV/nu_plugin_audio/issues/7)**
-    - Impossible to interrupt player task ([`feb493d`](https://github.com/SuaveIV/nu_plugin_audio/commit/feb493dd2dd15f124930f1cf83c6dc4cad565709))
- * **Uncategorized**
     - Swapped `unwrap` with error mapping ([`fc22480`](https://github.com/SuaveIV/nu_plugin_audio/commit/fc224800bf1869dcc4d1817038db5acd858f1a18))
     - Merge branch 'main' of https://github.com/FMotalleb/nu_plugin_audio_hook ([`8218bb0`](https://github.com/SuaveIV/nu_plugin_audio/commit/8218bb031bb29e7dbea78b3ae5182182ec3a2552))
     - Rodio to v0.21.1 ([`7500966`](https://github.com/SuaveIV/nu_plugin_audio/commit/7500966cb46bdc9736f40e881f41fe1b7fc0d74e))
@@ -941,6 +965,154 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - [Minor-Fix] tags ([`69236f4`](https://github.com/SuaveIV/nu_plugin_audio/commit/69236f4680bcb207ffb6cee7abf4645422842cc7))
     - [Minor] sound meta list ([`99964d5`](https://github.com/SuaveIV/nu_plugin_audio/commit/99964d520559a1f22bdae3e15615230e2f61bae6))
 </details>
+
+## v0.111.0-test.1 (2026-03-03)
+
+<csr-id-7f93b35850a9d3ff5a6863e07fba39a1a5513a1d/>
+<csr-id-c1c286ac414b18310e699856e77f9b021989c6bb/>
+<csr-id-8301c35d75314be1c3159c436c3c285a81cad1d4/>
+<csr-id-4ef01757bb9ede3c70429653c86c76513c894508/>
+
+### Documentation
+
+ - <csr-id-ad7d2ca9314bc7675f18df2cd75846e0f40410f7/> update installation instructions
+   Rewrites the Installation section in `README.md` to prioritize `nupm` (now using prebuilts) and add instructions for shell installers, `cargo binstall`, and manual downloads. Moves manual compilation to a fallback section.
+
+### New Features
+
+ - <csr-id-f40c6355d6b96ff01b7eaff18e1e60cbd391d6a0/> enhance download_and_install function with checksum verification and GPG signature support
+ - <csr-id-e6228d9d0f13ffbe502160c937670d62a084431c/> add allow-dirty configuration for CI
+ - <csr-id-f219aee3af53d3953b0d5bb10f785172857c7e54/> update workflows to use actions/checkout@v6 and actions/download-artifact@v8; add tag-on-merge workflow
+ - <csr-id-c2ca3dea85ecabc97d991b42e421bca0ac82edec/> add ARM64 release workflow for cross-compilation and packaging
+ - <csr-id-d802b04fa7ea336b75ad3395c1728600b56bba93/> support prebuilt binary installation
+   Updates `build.nu` to detect the current platform and attempt to download a prebuilt binary from GitHub Releases. It falls back to compiling from source if the binary is unavailable or the download fails. This significantly speeds up installation for users on supported platforms.
+
+### Bug Fixes
+
+ - <csr-id-19ea06eafa3ac3551d23f4a2b53f38c1c767c80d/> downgrade actions versions for compatibility and remove allow-dirty configuration
+ - <csr-id-ebfbfddff78e7aa8daa790550a8ae311ebed57b5/> rename plugin references from nu_plugin_audio_hook to nu_plugin_audio
+ - <csr-id-ad5d2a0378e47fd3ff47493aff44533816d71fef/> update README to reflect project renaming and improve clarity
+
+## v0.111.0 (2026-03-03)
+
+<csr-id-37d73dff2fccb240b449a0cb8735e9cc84058dc7/>
+<csr-id-20822a1287b050b8c093daa38a355a03fb1639b1/>
+<csr-id-18bb887257f46def5650105ac9b05d6e5287dfe4/>
+<csr-id-96e495a96b6a7caa7698545d081addc0887db9a5/>
+<csr-id-23da40b935119528871e06950ed6e0ea264c6e73/>
+<csr-id-bac83c5ef4ee78eb96cfa3c82abe694cac927c77/>
+<csr-id-4539614f120b7b5bdec4330706f4f048a223ede6/>
+<csr-id-0f09882df564029b14cdd0893214988c7de2b64d/>
+<csr-id-79412a36e5f154ade35215826dda808c69d2a7fa/>
+<csr-id-4ff643243ff994adaec17710648f9528759f9030/>
+<csr-id-4909d55a260d298f75f9115240d6463e3adba238/>
+<csr-id-18582856c3b49d6c4cbe553959b57768366749f7/>
+<csr-id-d6295e248a1eef439e08d3adeef144e0f20bc480/>
+<csr-id-b618985a0ac521caa566cbeca7fa03d3e9bb1a13/>
+
+### Documentation
+
+ - <csr-id-3d0403fcaf52609aca77395543482cf6cace7a41/> enhance documentation for audio metadata commands and constants
+ - <csr-id-b45e901d21f3bf7b4ce3507cf6d173398aa7c189/> update README with playback display, controls, and format support table
+ - <csr-id-a99cff6faa92a00a8dc1162ca75d57a1128c794f/> update README with new features and fixes
+   - Add `sound make --data` example for saving generated tones to WAV files
+
+### New Features
+
+<csr-id-e84d51fc0df6fbb3a5c2e5b792e000315ce8b29c/>
+<csr-id-bd0168c63ca7daa4dd5b236eaafe235d79f10a20/>
+
+ - <csr-id-9e71bea71ac2fb76fa3a569b0dd292ed13a80aea/> expand TAG_MAP, expose FileProperties, artwork, and fix duration
+   - TAG_MAP: HashMap → BTreeMap; add 22 new keys (comment, lyrics, label,
+   producer, remixer, replaygain_*, compilation, barcode, script, etc.)
+
+### Bug Fixes
+
+<csr-id-2df0c9230724b0545096bfeb742f0ab68ff7170a/>
+<csr-id-ff24e05e3dd03944d5580e4ffbb7e0a58a38d264/>
+<csr-id-b24841936746732faf879c5769d841158a3c924c/>
+<csr-id-ed5f34422c415a3e63d3a1cd054baa382062910b/>
+<csr-id-f30e460c481882501cd64177a800843f4cbd846b/>
+<csr-id-d72f14dd22def9f359c23635b2aea3187f8e3939/>
+<csr-id-b964eb009777bea33a7e5167356cae66f3e61c71/>
+<csr-id-2d73711822d1c8ec1c777c6ea527a77bd6d863bf/>
+<csr-id-e085674ee0c3a6c0dbe89f42fca14001fd7000b0/>
+<csr-id-624c183913cfe3b8c7bb3c05df3444140bcff7bf/>
+<csr-id-e3d43c8d570c06fc753bb8694bbbf7130f344a8c/>
+<csr-id-6f3f4c0d6336fc925bf2a8c4aec7955b1e01bf44/>
+<csr-id-ab0613dc35334f009e4b257291b5fcaec498d9d7/>
+<csr-id-a63143ae4de82100a4584ad42bbd0f2cc09cc315/>
+<csr-id-9a064c2d9b7d056c1ac8581214775f8edc5b7501/>
+<csr-id-da1fff2ca4e2fde047be672b6efe9438d9afb3bd/>
+<csr-id-741a149f8126fe8a64438a8977bc977d7a1072a1/>
+<csr-id-fd81afde55c82f5904372ddfa902a585092b0d6d/>
+<csr-id-07f095a291d49678aa45a493eeb6cc5ebe0faa5b/>
+<csr-id-43a3e1a92791712f725f32f25e182c9a77d5c4e7/>
+<csr-id-e3a9c860bcfb1116a310ef6bef275157d4da91cb/>
+<csr-id-375bc65f9d47978161a0f978216a0247817a3e39/>
+<csr-id-8bde4e2eda666731aad62d58229fb087afce5ddd/>
+<csr-id-df6d0b22d81511f38eb098350ce62ae072f5b988/>
+<csr-id-71d0a4c79f65594f8d52a2187d92b49e039e5f7d/>
+<csr-id-c8f00e68cc05a38542eac351c7f2a4223a57720b/>
+<csr-id-3aee04039914ea0dad5a8d9feffead93d1b4fff4/>
+<csr-id-416655971a94f73b189b3a683303c602d41d3e14/>
+
+ - <csr-id-5fdd4d3ac0348b285cd723b7c5a1b65dd181c6ee/> update dependencies to latest versions and clean up Cargo.lock
+ - <csr-id-274bfc72ca8597f3c80f6ffebf265da9d69d2a5a/> unblock dependency updates and secure workflow
+   - Remove explicit interprocess=2.2.1 pin from workflow and Cargo.toml
+
+## v0.109.1 (2025-12-03)
+
+## v0.109.0 (2025-11-30)
+
+## v0.108.0 (2025-10-17)
+
+## v0.107.0 (2025-09-03)
+
+## v0.106.1 (2025-08-03)
+
+<csr-id-98ab6aaf1a776a189e318950b9486a7689907155/>
+<csr-id-45bd16201b4d9918fe86fa820ea07026f94caab9/>
+<csr-id-9119a1d3f8c6c64a96aea770b20ed0013a8dafbc/>
+<csr-id-a67c093edcf0e9005f134e2d821a44ff8420f092/>
+<csr-id-4a0ef45f94b01cc069220e039778be31ff1d0cc8/>
+<csr-id-e2061a932043792ca517478a367f6eb991d56c05/>
+<csr-id-7500966cb46bdc9736f40e881f41fe1b7fc0d74e/>
+<csr-id-e3bad554084913238986cd3621eaeef10ce493ea/>
+<csr-id-1c3a1b798dc0875af9dded383aa143e3566652b2/>
+<csr-id-9a7d7d23d0aeffa11a154887541dcde17344d763/>
+<csr-id-40518de058b294cbb23348d2a09253c340d8716a/>
+<csr-id-6fde8d3a232bff33b8985ccfdf5018834f58d7ac/>
+<csr-id-2f778866fa580367000b7125d66cef4940e4f931/>
+<csr-id-4d02c133629c429b164f97bf846b9f5f12ef8a50/>
+<csr-id-f71f448a430baf778d7a848bf1c1d232490933ee/>
+<csr-id-6a640e8ff5a6fd833937af9628916d487a138062/>
+<csr-id-fc21199bd842e3f74c57568879adc91630162156/>
+<csr-id-332e1232c820905a460f1d8e120bd87988779b09/>
+<csr-id-d73259f2473e79653f11890091a7af5b789a1230/>
+<csr-id-5aa55fb893fd0e952158cf8b269063c393a27701/>
+
+### New Features
+
+ - <csr-id-4e21a525c531eff89474b8c56d85ca03d126595e/> player now accept relative paths
+ - <csr-id-21adaa164ace69d9cb1f579476e189566d53795d/> add GitHub Actions workflow for automatic dependency updates
+ - <csr-id-6831b19bf4636434573f44ebcbe90e2c4ad241b8/> auto publish script
+
+### Bug Fixes
+
+ - <csr-id-fc224800bf1869dcc4d1817038db5acd858f1a18/> swapped `unwrap` with error mapping
+ - <csr-id-feb493dd2dd15f124930f1cf83c6dc4cad565709/> impossible to interrupt player task
+ - <csr-id-009341711ec629392875f9c8a0cbbb91edb237a9/> update examples method signature to include lifetime parameter
+ - <csr-id-09a548fca38fd7a8ea3fb90502df3f4d051e60b4/> remove unnecessary echo statement from build.nu
+ - <csr-id-8c9290301e672bddef77f6c92c5929144c2f7c5e/> nupm package version
+ - <csr-id-c88864f5f37cc3c999e0e88a1c60c8131fbfcbb3/> permission issue on apt
+ - <csr-id-22828558d23d47e39777760a42b5d5cd64f84fb6/> changed `register` to `plugin add` in README
+ - <csr-id-0069342830baefafbeba42e04eaae55857c5b6fd/> added alsa sys package to workflow
+ - <csr-id-ffc95ad22865e1326a927eec085de5d0f2c94a17/> workflow trigger
+ - <csr-id-f7e4f203e16a9106856499c05b524404a2997df9/> nupm build script feature list
+ - <csr-id-dd8f83a3f3a2c56fcd8106a8a9705270deccd462/> bump nu-protocol to v0.94
+ - <csr-id-1e7f55b1e8c395d4179a4de3afb0e89e7b05b766/> `sound meta -a` error
+ - <csr-id-31cf298aaa67c0a0141b063bc1e88dfd0a8a25e7/> bump to nu-protocol v0.93
 
 ## v0.1.2 (2023-11-07)
 

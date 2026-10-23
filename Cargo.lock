@@ -1645,7 +1645,7 @@ dependencies = [
 
 [[package]]
 name = "nu_plugin_audio"
-version = "0.2.12"
+version = "0.2.13"
 dependencies = [
  "crossterm",
  "env_logger",
