@@ -1,0 +1,35 @@
+name: Audit
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    # Daily at 06:00 UTC. Advisories are published on their own schedule, so a
+    # weekly scan can leave a vulnerable lockfile live for days.
+    - cron: "0 6 * * *"
+
+jobs:
+  audit:
+    name: Audit (RustSec)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      # Installed from source rather than pulling in a third-party action, which
+      # matches how release-arm64.yml obtains `cross`.
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+
+      - name: Audit Cargo.lock
+        # Fails on known vulnerabilities. Unmaintained/yanked *warnings* do not
+        # fail the build: `paste` (via lofty) and `chacha20` (via rand) are
+        # transitive and not fixable from this repo.
+        run: cargo audit

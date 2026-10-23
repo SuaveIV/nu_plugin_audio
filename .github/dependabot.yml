@@ -12,6 +12,15 @@ updates:
       nushell:
         patterns:
           - "nu-*"
+      # Roll every non-Nushell patch bump into a single PR. Nushell is kept in
+      # its own group because it needs manual code updates per release.
+      cargo-patch:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "nu-*"
+        update-types:
+          - "patch"
 
     open-pull-requests-limit: 3
 
@@ -34,6 +43,12 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+
+    # Batch all action bumps into a single weekly PR instead of one PR per action.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
     commit-message:
       prefix: "chore"
