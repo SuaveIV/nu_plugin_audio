@@ -6,7 +6,7 @@ members = ["cargo:."]
 # Whether to enable GitHub Attestations
 github-attestations = true
 # The preferred dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.33.1"
+cargo-dist-version = "0.34.0"
 # CI backends to support
 ci = "github"
 # The installers to generate for each app
